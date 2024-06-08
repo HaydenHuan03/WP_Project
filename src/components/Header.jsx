@@ -4,8 +4,9 @@ import iconDown from '../assests/icon-chevron-down.svg'
 import iconUp from '../assests/icon-chevron-up.svg'
 import elipsis from '../assests/icon-vertical-ellipsis.svg'
 import HeaderDropdown from './HeaderDropdown'
+import AddEditBoardModal from '../modals/AddEditBoardModal'
 
-function Header() {
+function Header({setBoardModalOpen, boardModalOpen}) {
     // Check dropdown is opened or not
     const [openDropDown, setOpenDropDown] = useState(false)
 
@@ -46,7 +47,9 @@ function Header() {
 
         </header>
 
-        {openDropDown && <HeaderDropdown setOpenDropDown={setOpenDropDown}/>}
+        {openDropDown && <HeaderDropdown setBoardModalOpen={setBoardModalOpen} setOpenDropDown={setOpenDropDown}/>}
+
+        {boardModalOpen && <AddEditBoardModal setBoardModalOpen = {setBoardModalOpen}/>}
 
     </div>
   )

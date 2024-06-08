@@ -14,8 +14,7 @@ function HeaderDropdown({ setOpenDropDown }) {
     )
 
     const toggleDarkMode = (checked) => {
-        const newTheme = checked ? 'dark' : 'light';
-        setTheme(newTheme)
+        setTheme(colorTheme)
         setDarkSide(checked);
     }
 

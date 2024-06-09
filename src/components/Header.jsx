@@ -11,16 +11,19 @@ import AddEditTaskModal from '../modals/AddEditTaskModal'
 function Header({setBoardModalOpen, boardModalOpen}) {
     const dispatch = useDispatch()
 
-    // Check dropdown is opened or not
+    // State to manage the visibility of the dropdown menu
     const [openDropDown, setOpenDropDown] = useState(false)
 
-
+    // State to manage the visibility of the add/edit task modal
     const [openAddEditTask, setOpenAddEditTask] = useState(false)
 
-    //Edit by dynamically
+    // State to manage whether the board modal is in 'add' or 'edit' mode
     const [boardType, setBoardType] = useState('add')
 
+    // Get the list of boards from the Redux store
     const boards = useSelector( (state)=> state.boards)
+
+    // Get the currently active board
     const board = boards.find(board => board.isActive)
 
 

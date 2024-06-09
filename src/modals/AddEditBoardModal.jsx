@@ -7,6 +7,7 @@ import crossIcon from  '../assests/icon-cross.svg'
 import { useDispatch } from 'react-redux'
 import boardSlices from '../redux/boardSlice'
 
+// AddEditBoardModal component
 function AddEditBoardModal({setBoardModalOpen, type}) {
     const dispatch = useDispatch()
 

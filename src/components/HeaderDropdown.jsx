@@ -7,7 +7,7 @@ import { Switch } from '@headlessui/react'
 import useDarkMode from '../Hooks/useDarkMode'
 import boardsSlices from '../redux/boardSlice'
 
-
+// HeaderDropdown component
 function HeaderDropdown({ setOpenDropDown , setBoardModalOpen}) {
     const dispatch = useDispatch()
     const [colorTheme, setTheme] = useDarkMode()
@@ -15,6 +15,7 @@ function HeaderDropdown({ setOpenDropDown , setBoardModalOpen}) {
         colorTheme === 'light' ? true : false
     )
 
+    // Function to toggle dark mode
     const toggleDarkMode = (checked) => {
         setTheme(colorTheme)
         setDarkSide(checked);

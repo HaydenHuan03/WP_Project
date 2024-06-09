@@ -10,6 +10,7 @@ function AddEditTaskModal({type , device, setOpenAddEditTask, taskIndex, pervCol
     const [description, setDescription] = useState('')
     const [isValid, setIsValid] = useState(true)
 
+    // Get the active board from redux store
     const board = useSelector((state) => state.boards).find((board) => board.isActive)
 
     const columns = board.columns
@@ -33,15 +34,18 @@ function AddEditTaskModal({type , device, setOpenAddEditTask, taskIndex, pervCol
         })
     }
 
+    // Handle change in task status
     const onChangeStatus = (e) =>{
         setStatus(e.target.value)
         setNewColIndex(e.target.selectedIndex)
     }
 
+    // Handle deletion of a subtask
     const onDelete = (id) => {
         setSubtasks((perState) => perState.filter((el) => el.id !== id) )
     }
 
+    // Validate of task input
     const validate = () => {
         setIsValid(false)
 
@@ -58,6 +62,7 @@ function AddEditTaskModal({type , device, setOpenAddEditTask, taskIndex, pervCol
         return true
     }
 
+    // Handle form submission for adding or editing a task
     const onSubmit = (type) =>{
         if(type === 'add'){
             dispatch(boardsSlices.actions.addTask({

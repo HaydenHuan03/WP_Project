@@ -20,3 +20,10 @@ body{
         duration-200
     }
 }
+
+.select-status {
+    background-image: url('./assests/icon-chevron-down.svg');
+    appearance: none;
+    background-repeat: no-repeat;
+    background-position: right 16px top 50%;
+}

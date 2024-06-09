@@ -1,15 +1,21 @@
 import React, { useState } from 'react'
 import crossIcon from "../assests/icon-cross.svg";
 import {v4 as uuidv4} from 'uuid'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import boardsSlices from '../redux/boardSlice';
 
-function AddEditTaskModal({type , device, setOpenAddEditTask}) {
+function AddEditTaskModal({type , device, setOpenAddEditTask, taskIndex, pervColIndex = 0}) {
+    const dispatch = useDispatch()
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
+    const [isValid, setIsValid] = useState(true)
 
     const board = useSelector((state) => state.boards).find((board) => board.isActive)
 
     const columns = board.columns
+    const col = columns.find((col, index) => index === pervColIndex)
+    const [status, setStatus] = useState(columns[pervColIndex].name)
+    const [newColIndex, setNewColIndex] = useState(pervColIndex)
 
     const [subtasks, setSubtasks] = useState(
         [
@@ -27,8 +33,47 @@ function AddEditTaskModal({type , device, setOpenAddEditTask}) {
         })
     }
 
+    const onChangeStatus = (e) =>{
+        setStatus(e.target.value)
+        setNewColIndex(e.target.selectedIndex)
+    }
+
     const onDelete = (id) => {
         setSubtasks((perState) => perState.filter((el) => el.id !== id) )
+    }
+
+    const validate = () => {
+        setIsValid(false)
+
+        if(!title.trim())
+            return false
+
+        for (let i = 0; i < subtasks.length; i++){
+            if(!subtasks[i].title.trim()){
+                return false
+            }
+        }
+
+        setIsValid(true)
+        return true
+    }
+
+    const onSubmit = (type) =>{
+        if(type === 'add'){
+            dispatch(boardsSlices.actions.addTask({
+                title, description, subtasks, status, newColIndex
+            }))
+        }else{
+            dispatch(boardsSlices.actions.editTask)({
+                title,
+                description,
+                subtasks,
+                status,
+                taskIndex,
+                pervColIndex,
+                newColIndex
+            })
+        }
     }
 
   return (
@@ -146,6 +191,8 @@ function AddEditTaskModal({type , device, setOpenAddEditTask}) {
                 </button>
             </div>
 
+
+                {/* select status  */}
                 {/* Current Status Section */}
 
                 <div
@@ -155,19 +202,33 @@ function AddEditTaskModal({type , device, setOpenAddEditTask}) {
                         Current status
                     </label>
                     <select
+                    value={status}
+                    onChange={(e) => onChangeStatus(e)}
                     className=' select-status flex flex-grow  px-4 py-2 rounded-md 
-                     text-sm bg-transparent focus:border-0 border 
-                     border-gray-300  focus:outline-[#635fc7]  outline-none'
-                    >
-                        { columns.map((column, index) => (
-                            <option
-                            value={column.name}
-                            key={index}
+                     text-sm bg-transparent focus:border-0 border-[1px]
+                     border-gray-300  focus:outline-[#635fc7]  outline-none'>
+                            {columns.map((column, index) => (
+                            <option className='dark:bg-[#2b2c37] dark:text-white'
+                                value={column.name}
+                                key={index}
                             >
                                 {column.name}
                             </option>
                         ))}
                     </select>
+
+                    <button
+                    onClick={() => {
+                        const isValid = validate()
+                        if(isValid){
+                            onSubmit(type)
+                            setOpenAddEditTask(false)
+                        }
+                    }}
+                    className=' w-full items-center text-white bg-[#635fc7] py-2 rounded-full '
+                    >
+                        {type === 'edit' ? 'Save Edit' : 'Create Task'}
+                    </button>
                 </div>
         </div>
 

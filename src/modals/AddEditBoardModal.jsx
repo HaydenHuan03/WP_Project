@@ -1,23 +1,72 @@
+// Function: Add board or edit the existing board
+
 import React, {useState} from 'react'
+//To generate unique id
 import {v4 as uuidv4} from 'uuid'
+import crossIcon from  '../assests/icon-cross.svg'
+import { useDispatch } from 'react-redux'
+import boardSlices from '../redux/boardSlice'
 
 function AddEditBoardModal({setBoardModalOpen, type}) {
+    const dispatch = useDispatch()
+
+    // The first parameter is current value, second parameter is function to update the state
+
+    // Store the name of the board
     const [name, setName] = useState('')
 
+    // Track whether the form of input is valid or not
+    const [isValid, setIsValid] = useState(true)
+
+    // An array of columns objects, each with name, task and unique id
     const[newColumns, setNewColumns] = useState(
         [
-            {name : 'Todo', task : [], id : ''},
-            {name : 'Doing', task : [], id : ''}
+            {name : 'Todo', task : [], id : uuidv4()},
+            {name : 'Doing', task : [], id : uuidv4()}
         ]
     ) 
 
+    // Update the columns name based on its id
     const onChange = (id, newValue) => {
-        setNewColumns((prevState) => {
-            const newState = [...prevState]
+        setNewColumns((pervState) => {
+            const newState = [...pervState]
             const column = newState.find((col) => col.id === id)
             column.name = newValue
             return newState
         })
+    }
+
+    // Delete the board columns based on its id
+    const onDelete = (id) =>{
+        setNewColumns((perState) => perState.filter((el) => el.id !== id) )
+    }
+    
+    // To ensure both the board name and column name is not empty
+    const validate = () => {
+        setIsValid(false)
+
+        if(!name.trim())
+            return false
+
+        for (let i = 0; i < newColumns.length; i++){
+            if(!newColumns[i].name.trim()){
+                return false
+            }
+        }
+
+        setIsValid(true)
+        return true
+    }
+
+
+    // Add or edit a board based on the type with action 'dispatch'
+    const onSubmit = (type) => {
+        setBoardModalOpen(false)
+        if (type === 'add') {
+            dispatch(boardSlices.actions.addBoard({ name, columns: newColumns }))
+        } else {
+            dispatch(boardSlices.actions.editBoard({ name, columns: newColumns }))
+        }
     }
 
 
@@ -46,7 +95,7 @@ function AddEditBoardModal({setBoardModalOpen, type}) {
                 <label
                 className=' text-sm dark:text-white text-gray-500'
                 >
-                    Board Columns
+                    Board Name
                 </label>
                 <input type='text'
                 className=' bg-transparent px-4 py-2 rounded-md text-sm border
@@ -84,9 +133,42 @@ function AddEditBoardModal({setBoardModalOpen, type}) {
                                 value={column.name}
                                 />
 
+                                <img src={crossIcon} className=' cursor-pointer m-4' onClick={()=>{
+                                    onDelete(column.id)
+                                }} />
+
                             </div>
                         ))
                     }
+
+                    <div>
+                        <button
+                        className=' w-full items-center hover:opacity-75 dark:text-[#635fc7]
+                         dark:bg-white text-white bg-[#635fc7] mt-2 py-3 rounded-full'
+
+                         onClick={()=>{
+                            setNewColumns((state)=>[
+                                ...state,
+                                {name : '', task : [], id : ''},
+                            ])
+                         }}
+                        >
+                            + Add new column
+                        </button>
+
+                        <button
+                        className=' w-full items-center hover:opacity-75 dark:text-white dark:bg-[#635fc7] mt-3 py-3 relative text-white bg-[#635fc7]
+                        rounded-full'
+                        onClick={
+                            () =>{
+                                const isValid = validate()
+                                if( isValid === true) onSubmit(type)
+                            }
+                        }
+                        >
+                            {type === 'add' ? 'Create New Board': 'Save Changes'}
+                        </button>
+                    </div>
 
                 </div>
         </div>

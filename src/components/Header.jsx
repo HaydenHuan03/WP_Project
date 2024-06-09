@@ -5,10 +5,23 @@ import iconUp from '../assests/icon-chevron-up.svg'
 import elipsis from '../assests/icon-vertical-ellipsis.svg'
 import HeaderDropdown from './HeaderDropdown'
 import AddEditBoardModal from '../modals/AddEditBoardModal'
+import { useDispatch, useSelector } from 'react-redux'
+import AddEditTaskModal from '../modals/AddEditTaskModal'
 
 function Header({setBoardModalOpen, boardModalOpen}) {
+    const dispatch = useDispatch()
+
     // Check dropdown is opened or not
     const [openDropDown, setOpenDropDown] = useState(false)
+
+
+    const [openAddEditTask, setOpenAddEditTask] = useState(false)
+
+    //Edit by dynamically
+    const [boardType, setBoardType] = useState('add')
+
+    const boards = useSelector( (state)=> state.boards)
+    const board = boards.find(board => board.isActive)
 
 
   return (
@@ -24,7 +37,7 @@ function Header({setBoardModalOpen, boardModalOpen}) {
                 </h3>
                 <div className=' flex items-center'>
                     <h3 className=' truncate max-w-[200px] md:text-2xl text-xl font-bold md:ml-20 font-sans'>
-                        board Name
+                        {board.name}
                     </h3>
                     <img src={openDropDown ? iconUp :iconDown}
                      alt="dropdown icon"
@@ -40,7 +53,12 @@ function Header({setBoardModalOpen, boardModalOpen}) {
             <div className=' flex space-x-4 items-center md:space-x-6'>
                 <button className= ' hidden md:block button'>+ Add New Task</button>
 
-                <button className='button py-1 px-3 md:hidden'>+</button>
+                <button 
+                    onClick={
+                        () =>
+                        setOpenAddEditTask(state => !state)
+                }
+                className='button py-1 px-3 md:hidden'>+</button>
                 
                 <img src={elipsis} alt="elipsis" className=' cursor-pointer h-6'/>
             </div>
@@ -49,7 +67,11 @@ function Header({setBoardModalOpen, boardModalOpen}) {
 
         {openDropDown && <HeaderDropdown setBoardModalOpen={setBoardModalOpen} setOpenDropDown={setOpenDropDown}/>}
 
-        {boardModalOpen && <AddEditBoardModal setBoardModalOpen = {setBoardModalOpen}/>}
+        {boardModalOpen && <AddEditBoardModal type={boardType} setBoardModalOpen = {setBoardModalOpen}/>}
+
+        {
+            openAddEditTask && <AddEditTaskModal setOpenAddEditTask={setOpenAddEditTask} device='mobile'/>
+        }
 
     </div>
   )

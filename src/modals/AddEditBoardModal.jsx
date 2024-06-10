@@ -42,8 +42,8 @@ function AddEditBoardModal({setBoardModalOpen, type, }) {
 
     // Update the columns name based on its id
     const onChange = (id, newValue) => {
-        setNewColumns((pervState) => {
-            const newState = [...pervState]
+        setNewColumns((prevState) => {
+            const newState = [...prevState]
             const column = newState.find((col) => col.id === id)
             column.name = newValue
             return newState
@@ -77,9 +77,9 @@ function AddEditBoardModal({setBoardModalOpen, type, }) {
     const onSubmit = (type) => {
         setBoardModalOpen(false)
         if (type === 'add') {
-            dispatch(boardSlices.actions.addBoard({ name, columns: newColumns }))
+            dispatch(boardSlices.actions.addBoard({ name, newColumns }))
         } else {
-            dispatch(boardSlices.actions.editBoard({ name, columns: newColumns }))
+            dispatch(boardSlices.actions.editBoard({ name, newColumns }))
         }
     }
 

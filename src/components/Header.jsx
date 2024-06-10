@@ -7,25 +7,38 @@ import HeaderDropdown from './HeaderDropdown'
 import AddEditBoardModal from '../modals/AddEditBoardModal'
 import { useDispatch, useSelector } from 'react-redux'
 import AddEditTaskModal from '../modals/AddEditTaskModal'
+import ElipsisMenu  from './ElipsisMenu'
 
 function Header({setBoardModalOpen, boardModalOpen}) {
     const dispatch = useDispatch()
 
     // State to manage the visibility of the dropdown menu
     const [openDropDown, setOpenDropDown] = useState(false)
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 
     // State to manage the visibility of the add/edit task modal
     const [openAddEditTask, setOpenAddEditTask] = useState(false)
+
+    const[isElipsisOpen, setIsElipsisOpen] = useState(false)
 
     // State to manage whether the board modal is in 'add' or 'edit' mode
     const [boardType, setBoardType] = useState('add')
 
     // Get the list of boards from the Redux store
-    const boards = useSelector( (state)=> state.boards)
+    const boards = useSelector((state) => state.boards)
 
     // Get the currently active board
-    const board = boards.find(board => board.isActive)
+    const board = boards ? boards.find((board) => board.isActive) : null
 
+    const setOpenEditModal = () => {
+        setBoardModalOpen(true)
+        setIsElipsisOpen(false)
+    }
+
+    const setOpenDeleteModal = () => {
+        setIsDeleteModalOpen(true)
+        setIsElipsisOpen(false)
+    }
 
   return (
     <div className=' p-4 fixed left-0 bg-white dark:bg-[#2b2c37] z-50 right-0'>
@@ -63,7 +76,18 @@ function Header({setBoardModalOpen, boardModalOpen}) {
                 }
                 className='button py-1 px-3 md:hidden'>+</button>
                 
-                <img src={elipsis} alt="elipsis" className=' cursor-pointer h-6'/>
+                <img src={elipsis} onClick={() => {
+                    setBoardType('edit')
+                    setOpenDropDown(false)
+                    setIsElipsisOpen(state => !state)
+                }} alt="elipsis" className=' cursor-pointer h-6'/>
+
+                {
+                    isElipsisOpen && <ElipsisMenu type='Boards'
+                    setOpenDeleteModal={setIsDeleteModalOpen}
+                    setOpenEditModal={setOpenEditModal}
+                    />
+                }
             </div>
 
         </header>

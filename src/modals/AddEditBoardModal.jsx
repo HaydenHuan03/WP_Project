@@ -1,20 +1,23 @@
 // Function: Add board or edit the existing board
-
 import React, {useState} from 'react'
 //To generate unique id
 import {v4 as uuidv4} from 'uuid'
 import crossIcon from  '../assests/icon-cross.svg'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import boardSlices from '../redux/boardSlice'
 
 // AddEditBoardModal component
-function AddEditBoardModal({setBoardModalOpen, type}) {
+function AddEditBoardModal({setBoardModalOpen, type, }) {
     const dispatch = useDispatch()
 
     // The first parameter is current value, second parameter is function to update the state
 
     // Store the name of the board
     const [name, setName] = useState('')
+
+    const[isFirstLoad, setIsFirstLoad] = useState(true)
+
+    const board = useSelector((state) => state.boards).find((board) => board.isActive)
 
     // Track whether the form of input is valid or not
     const [isValid, setIsValid] = useState(true)
@@ -26,6 +29,16 @@ function AddEditBoardModal({setBoardModalOpen, type}) {
             {name : 'Doing', task : [], id : uuidv4()}
         ]
     ) 
+
+    if (type === 'edit' && isFirstLoad){
+        setNewColumns(
+            board.columns.map((col)=>{
+                return { ...col, id : uuidv4() }
+            })
+        )
+        setName(board.name)
+        setIsFirstLoad(false)
+    }
 
     // Update the columns name based on its id
     const onChange = (id, newValue) => {

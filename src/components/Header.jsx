@@ -49,6 +49,12 @@ function Header({setBoardModalOpen, boardModalOpen}) {
         setIsDeleteModalOpen(false)
     }
 
+    const onDropdownClick = () => {
+        setOpenDropDown((state) => !state)
+        setIsElipsisOpen(false)
+        setBoardType('add')
+    }
+
   return (
     <div className=' p-4 fixed left-0 bg-white dark:bg-[#2b2c37] z-50 right-0'>
         <header className='flex justify-between dark:text-white items-center'>
@@ -67,7 +73,7 @@ function Header({setBoardModalOpen, boardModalOpen}) {
                     <img src={openDropDown ? iconUp :iconDown}
                      alt="dropdown icon"
                     className=' w-3 ml-2 cursor-pointer md:hidden'
-                    onClick={()=> setOpenDropDown(state => !state)}
+                    onClick={onDropdownClick}
                     />
 
                 </div>

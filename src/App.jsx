@@ -24,19 +24,19 @@ function App(){
     >
       <>
         {boards.length > 0 ?
-          <>  
+        <>  
           {/* Header Section */}
 
           <Header boardModalOpen = {boardModalOpen} setBoardModalOpen = {setBoardModalOpen}/>
 
           {/* Center Section */}
 
-          <Center/>
+          <Center boardModalOpen = {boardModalOpen} setBoardModalOpen = {setBoardModalOpen}/>
         </>
         :
-         <>
-         <EmptyBoard type='add'/>
-         </>
+        <>
+          <EmptyBoard type='add'/>
+        </>
       }
       </>
     </div>

@@ -14,8 +14,6 @@ function App(){
     dispatch(boardsSlices.actions.setBoardActive({index : 0}))
   }
 
-
-
   const [boardModalOpen, setBoardModalOpen] = useState(false)
 
   return(

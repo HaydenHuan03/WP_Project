@@ -2,6 +2,7 @@ import { shuffle } from 'lodash'
 import React, {useState, useEffect} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Task from './Task'
+import boardsSlices from '../redux/boardSlice'
 
 function Column({colIndex}) {
 
@@ -28,19 +29,35 @@ function Column({colIndex}) {
         setColor( shuffle(colors).pop())
     }, [dispatch])
 
+    const handleOnDragOver = (e) => {
+        e.preventDefault()
+    }
+
+    const handleOnDrop = (e) => {
+        const {prevColIndex, taskIndex} = JSON.parse(
+            e.dataTransfer.getData("text")
+        )
+
+        if(colIndex !== prevColIndex){
+            dispatch(boardsSlices.actions.dragTask({colIndex, prevColIndex, taskIndex}))
+        }
+    }
+
   return (
     <div
+    onDrop={handleOnDrop}
+    onDragOver={handleOnDragOver}
     className=' scrollbar-hide mx-5 pt-[90px] min-w-[280px]'
     >
         <div
-        className=' font-semibold flex items-center gap-2 tracking-widest md:tracking-[2em] text-[#828fa3]'
+        className=' font-semibold flex items-center gap-2 tracking-widest text-[#828fa3]'
         >
-            <div className={`rounded-full w-4 h-4 ${color}`}/>
-                {col.name} ({col.tasks.length})
+            <div className={` rounded-full w-4 h-4 ${color}`}/>
+                {col.name} ({col?.tasks?.length})
         </div>
 
         {
-            col.tasks.map((task, index) => (
+            col.tasks?.map((task, index) => (
                 <Task key={index} taskIndex={index} colIndex={colIndex}/>
             ))
         }

@@ -4,7 +4,7 @@ import {v4 as uuidv4} from 'uuid'
 import { useDispatch, useSelector } from 'react-redux';
 import boardsSlices from '../redux/boardSlice';
 
-function AddEditTaskModal({type , device, setOpenAddEditTask, taskIndex, pervColIndex = 0}) {
+function AddEditTaskModal({type , device, setOpenAddEditTask,  setIsTaskModalOpen, taskIndex, prevColIndex = 0}) {
     const dispatch = useDispatch()
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
@@ -13,10 +13,15 @@ function AddEditTaskModal({type , device, setOpenAddEditTask, taskIndex, pervCol
     // Get the active board from redux store
     const board = useSelector((state) => state.boards).find((board) => board.isActive)
 
+    const[isFirstLoad, setIsFirsLoad] = useState(true)
+
     const columns = board.columns
-    const col = columns.find((col, index) => index === pervColIndex)
-    const [status, setStatus] = useState(columns[pervColIndex].name)
-    const [newColIndex, setNewColIndex] = useState(pervColIndex)
+    const col = columns.find((col, index) => index === prevColIndex)
+
+    const task = col ? col.tasks.find((task, index) => index === taskIndex) : []
+
+    const [status, setStatus] = useState(columns[prevColIndex].name)
+    const [newColIndex, setNewColIndex] = useState(prevColIndex)
 
     const [subtasks, setSubtasks] = useState(
         [
@@ -24,6 +29,17 @@ function AddEditTaskModal({type , device, setOpenAddEditTask, taskIndex, pervCol
             {title: '', isCompleted: false, id : uuidv4()},
         ]
     )
+
+    if(type === 'edit' && isFirstLoad){
+        setSubtasks(
+            task.subtasks.map((subtask) => {
+                return {...subtask, id : uuidv4}
+            })
+        )
+        setTitle(task.title)
+        setDescription(task.description)
+        setIsFirsLoad(false)
+    }
 
     const onChange = (id, newValue) => {
         setSubtasks((pervState) => {
@@ -69,15 +85,15 @@ function AddEditTaskModal({type , device, setOpenAddEditTask, taskIndex, pervCol
                 title, description, subtasks, status, newColIndex
             }))
         }else{
-            dispatch(boardsSlices.actions.editTask)({
+            dispatch(boardsSlices.actions.editTask({
                 title,
                 description,
                 subtasks,
                 status,
                 taskIndex,
-                pervColIndex,
+                prevColIndex,
                 newColIndex
-            })
+            }))
         }
     }
 

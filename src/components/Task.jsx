@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import TaskModal from './TaskModal'
+import TaskModal from '../modals/TaskModal'
 
 function Task({taskIndex, colIndex}) {
     const boards = useSelector(state => state.boards)
@@ -19,9 +19,18 @@ function Task({taskIndex, colIndex}) {
         }
     })
 
+    const handleOnDrag = (e) => {
+        e.dataTransfer.setData(
+            "text",
+            JSON.stringify({taskIndex, prevColIndex : colIndex})
+        );
+    };
+
   return (
     <div>
         <div
+        onDragStart={handleOnDrag}
+        draggable
         onClick={()=>{
             setIsTaskModalOpen(true)
         }}
@@ -43,7 +52,7 @@ function Task({taskIndex, colIndex}) {
         </div>
         {
             isTaskModalOpen && (
-            <TaskModal/>
+            <TaskModal colIndex={colIndex} taskIndex={taskIndex} setIsTaskModalOpen={setIsTaskModalOpen}/>
             )
         }
     </div>

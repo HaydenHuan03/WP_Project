@@ -1,8 +1,10 @@
-import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import TaskModal from '../modals/TaskModal'
+import boardsSlices from '../redux/boardSlice'
 
 function Task({taskIndex, colIndex}) {
+    const dispatch = useDispatch()
     const boards = useSelector(state => state.boards)
     const board = boards.find(board => board.isActive)
     const columns = board.columns
@@ -26,6 +28,19 @@ function Task({taskIndex, colIndex}) {
         );
     };
 
+    useEffect(() => {
+        if(completed === subtasks.length && col.name !== "Done"){
+            const doneColIndex = columns.findIndex((column) => column.name === 'Done')
+            if(doneColIndex !== -1){
+                dispatch(boardsSlices.actions.moveTaskToDone({
+                    taskIndex,
+                    prevColIndex: colIndex,
+                    newColIndex: doneColIndex,
+                }))
+            }
+        }
+    }, [completed, subtasks.length, col.name, taskIndex, colIndex, columns, dispatch])
+
   return (
     <div>
         <div
@@ -48,6 +63,11 @@ function Task({taskIndex, colIndex}) {
             >
                 {completed} of  {subtasks.length} completed tasks
 
+            </p>
+
+            <p
+            className=' font-bold text-xs tracking-tighter mt-2 text-gray-500'>
+                Deadline: {task.dueDate? task.dueDate:'No deadline is set'}
             </p>
         </div>
         {

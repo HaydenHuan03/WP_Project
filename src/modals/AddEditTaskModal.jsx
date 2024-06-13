@@ -8,6 +8,7 @@ function AddEditTaskModal({type , device, setOpenAddEditTask,  setIsTaskModalOpe
     const dispatch = useDispatch()
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
+    const [dueDate, setDueDate] = useState('')
     const [isValid, setIsValid] = useState(true)
 
     // Get the active board from redux store
@@ -38,6 +39,7 @@ function AddEditTaskModal({type , device, setOpenAddEditTask,  setIsTaskModalOpe
         )
         setTitle(task.title)
         setDescription(task.description)
+        setDueDate(task.dueDate)
         setIsFirsLoad(false)
     }
 
@@ -82,7 +84,7 @@ function AddEditTaskModal({type , device, setOpenAddEditTask,  setIsTaskModalOpe
     const onSubmit = (type) =>{
         if(type === 'add'){
             dispatch(boardsSlices.actions.addTask({
-                title, description, subtasks, status, newColIndex
+                title, description, subtasks, status,dueDate, newColIndex
             }))
         }else{
             dispatch(boardsSlices.actions.editTask({
@@ -90,6 +92,7 @@ function AddEditTaskModal({type , device, setOpenAddEditTask,  setIsTaskModalOpe
                 description,
                 subtasks,
                 status,
+                dueDate,
                 taskIndex,
                 prevColIndex,
                 newColIndex
@@ -212,6 +215,31 @@ function AddEditTaskModal({type , device, setOpenAddEditTask,  setIsTaskModalOpe
                 </button>
             </div>
 
+            {/* Deadline section */}
+            <div
+            className=' mt-8 flex flex-col space-y-1'
+            >
+                <label 
+                className=' text-sm dark:text-white text-gray-500'
+                >
+                    Deadline
+                </label>
+                <div
+                    className=' flex items-center w-full'
+                    >
+                    <input 
+                    type='date'
+                    value={dueDate} 
+                    onChange={(e)=>{
+                        setDueDate(e.target.value)
+                    }}
+                    className=' bg-transparent outline-none focus:border-0 border flex-grow
+                    px-4 py-2 rounded-md text-sm border-gray-600 focus:outline-[#635fc7]
+                    '
+                    placeholder=' e.g 01/27/2003'
+                    />
+                </div>
+            </div>
 
                 {/* select status  */}
                 {/* Current Status Section */}

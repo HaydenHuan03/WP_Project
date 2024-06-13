@@ -37,9 +37,9 @@ const boardsSlices = createSlice({
           });
         },
         addTask: (state, action) => {
-          const { title, status, description, subtasks, newColIndex } =
+          const { title, status, description, subtasks, dueDate, newColIndex } =
             action.payload;
-          const task = { title, description, subtasks, status };
+          const task = { title, description, subtasks, status, dueDate };
           const board = state.find((board) => board.isActive);
           const column = board.columns.find((col, index) => index === newColIndex);
           column.tasks.push(task);
@@ -50,6 +50,7 @@ const boardsSlices = createSlice({
             status,
             description,
             subtasks,
+            dueDate,
             prevColIndex,
             newColIndex,
             taskIndex,
@@ -61,6 +62,7 @@ const boardsSlices = createSlice({
           task.status = status;
           task.description = description;
           task.subtasks = subtasks;
+          task.dueDate = dueDate;
           if (prevColIndex === newColIndex) return;
           column.tasks = column.tasks.filter((task, index) => index !== taskIndex);
           const newCol = board.columns.find((col, index) => index === newColIndex);
@@ -99,7 +101,14 @@ const boardsSlices = createSlice({
           const col = board.columns.find((col, i) => i === payload.colIndex);
           col.tasks = col.tasks.filter((task, i) => i !== payload.taskIndex);
         },
+        moveTaskToDone: (state, action) => {
+          const{taskIndex, prevColIndex, newColIndex} = action.payload;
+          const board = state.find(board=>board.isActive);
+          const task = board.columns[prevColIndex].tasks.splice(taskIndex, 1)[0];
+          board.columns[newColIndex].tasks.push(task);
+        }
       },
 })
 
+export const { addTask, editTask, moveTaskToDone } = boardsSlices.actions;
 export default boardsSlices

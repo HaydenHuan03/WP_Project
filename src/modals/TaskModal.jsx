@@ -18,7 +18,13 @@ function TaskModal({colIndex, taskIndex, setIsTaskModalOpen}) {
   const task = col.tasks.find((col, i) => taskIndex === i)
   const subtasks = task.subtasks
 
-  console.log(task)
+  const [dueDate, setDueDate] = useState(task.dueDate || '');
+
+  const deadline = () => {
+    if(task.dueDate){
+      setDueDate(task.dueDate)
+    }
+  }
 
   let completed = 0
   subtasks.forEach((subtask) => {
@@ -107,6 +113,10 @@ function TaskModal({colIndex, taskIndex, setIsTaskModalOpen}) {
           className=' text-gray-500 font-semibold tracking-wide md:tracking-wider text-sm pt-6'
           >
             {task.description}
+          </p>
+
+          <p className='font-bold pt-6 text-gray-100 tracking-widest text-sm'>
+            Deadline : {dueDate ? dueDate : 'No deadline is set'}
           </p>
 
           <p

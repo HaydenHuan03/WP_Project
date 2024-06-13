@@ -4,6 +4,8 @@ import Center from './components/Center'
 import { useDispatch, useSelector } from 'react-redux'
 import boardsSlices from './redux/boardSlice'
 import EmptyBoard from './components/EmptyBoard'
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
+
 
 function App(){
   const dispatch = useDispatch()

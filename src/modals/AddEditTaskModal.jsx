@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import crossIcon from "../assests/icon-cross.svg";
 import {v4 as uuidv4} from 'uuid'
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,10 +16,10 @@ function AddEditTaskModal({type , device, setOpenAddEditTask,  setIsTaskModalOpe
 
     const[isFirstLoad, setIsFirsLoad] = useState(true)
 
-    const columns = board.columns
-    const col = columns.find((col, index) => index === prevColIndex)
+    const columns = board?.columns || []
+    const col = columns[prevColIndex]
 
-    const task = col ? col.tasks.find((task, index) => index === taskIndex) : []
+    const task = col?.tasks?.[taskIndex]
 
     const [status, setStatus] = useState(columns[prevColIndex].name)
     const [newColIndex, setNewColIndex] = useState(prevColIndex)
@@ -31,17 +31,19 @@ function AddEditTaskModal({type , device, setOpenAddEditTask,  setIsTaskModalOpe
         ]
     )
 
-    if(type === 'edit' && isFirstLoad){
-        setSubtasks(
-            task.subtasks.map((subtask) => {
-                return {...subtask, id : uuidv4}
-            })
-        )
-        setTitle(task.title)
-        setDescription(task.description)
-        setDueDate(task.dueDate)
-        setIsFirsLoad(false)
-    }
+    useEffect(() => {
+        if(type === 'edit' && isFirstLoad && task){
+            setSubtasks(
+                task.subtasks.map((subtask) => {
+                    return {...subtask, id : uuidv4}
+                })
+            )
+            setTitle(task.title)
+            setDescription(task.description)
+            setDueDate(task.dueDate || '')
+            setIsFirsLoad(false)
+        }
+    },[type, task, prevColIndex, columns])
 
     const onChange = (id, newValue) => {
         setSubtasks((pervState) => {
@@ -82,21 +84,20 @@ function AddEditTaskModal({type , device, setOpenAddEditTask,  setIsTaskModalOpe
 
     // Handle form submission for adding or editing a task
     const onSubmit = (type) =>{
+        const payload = {
+            title,
+            description,
+            subtasks,
+            status,
+            dueDate,
+            newColIndex,
+            taskIndex,
+            prevColIndex,
+        }
         if(type === 'add'){
-            dispatch(boardsSlices.actions.addTask({
-                title, description, subtasks, status,dueDate, newColIndex
-            }))
+            dispatch(boardsSlices.actions.addTask(payload))
         }else{
-            dispatch(boardsSlices.actions.editTask({
-                title,
-                description,
-                subtasks,
-                status,
-                dueDate,
-                taskIndex,
-                prevColIndex,
-                newColIndex
-            }))
+            dispatch(boardsSlices.actions.editTask(payload))
         }
     }
 

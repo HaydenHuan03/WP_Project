@@ -8,7 +8,7 @@ const boardsSlices = createSlice({
     initialState : data.boards,
     reducers: {
         addBoard: (state, action) => {
-          const isActive = state.length > 0 ? false : true;
+          const isActive = state.length === 0;
           const payload = action.payload;
           const board = {
             name: payload.name,
@@ -37,12 +37,30 @@ const boardsSlices = createSlice({
           });
         },
         addTask: (state, action) => {
-          const { title, status, description, subtasks, dueDate, newColIndex } =
-            action.payload;
+          const { title, status, description, subtasks, dueDate, newColIndex } = action.payload;
           const task = { title, description, subtasks, status, dueDate };
-          const board = state.find((board) => board.isActive);
-          const column = board.columns.find((col, index) => index === newColIndex);
-          column.tasks.push(task);
+        
+          return state.map((board) => {
+            if (board.isActive) {
+              const updatedColumns = board.columns.map((col, index) => {
+                if (index === newColIndex) {
+                  // Check if col.tasks exists, if not, initialize it as an empty array
+                  const tasks = col.tasks || [];
+                  return {
+                    ...col,
+                    tasks: [...tasks, task],
+                  };
+                }
+                return col;
+              });
+        
+              return {
+                ...board,
+                columns: updatedColumns,
+              };
+            }
+            return board;
+          });
         },
         editTask: (state, action) => {
           const {
@@ -110,5 +128,4 @@ const boardsSlices = createSlice({
       },
 })
 
-export const { addTask, editTask, moveTaskToDone } = boardsSlices.actions;
 export default boardsSlices

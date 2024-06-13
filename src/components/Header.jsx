@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import logo from '../assests/logo-mobile.svg'
+import logo from '../assests/lollipop-32x32.png'
 import iconDown from '../assests/icon-chevron-down.svg'
 import iconUp from '../assests/icon-chevron-up.svg'
 import elipsis from '../assests/icon-vertical-ellipsis.svg'

@@ -18,7 +18,6 @@ function Subtask({index, taskIndex, colIndex}) {
         )
     }
 
-
   return (
     <div
     className=' w-full flex hover:bg-[#635fc740] dark:hover:bg-[#635fc740] rounded-md relative items-center
@@ -30,7 +29,7 @@ function Subtask({index, taskIndex, colIndex}) {
         onChange={onChange}
         />
         <p
-        className={checked && ' line-through opacity-30'}
+        className={checked? ' line-through opacity-30' : ''}
         >
             {subtask.title}
         </p>

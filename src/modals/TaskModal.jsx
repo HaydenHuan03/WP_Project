@@ -37,10 +37,10 @@ function TaskModal({colIndex, taskIndex, setIsTaskModalOpen}) {
   const[newColIndex, setNewColIndex] = useState(columns.indexOf(col))
   const[elipsisMenuOpen, setElipsisMenuOpen] = useState(false)
   const[isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-
   const[isAddTaskModalOpen, setIsAddTaskModalOpen]=useState(false)
 
   const setOpenEditModal = () => {
+    console.log(task.title)
     setIsAddTaskModalOpen(true)
     setElipsisMenuOpen(false)
   }
@@ -103,7 +103,7 @@ function TaskModal({colIndex, taskIndex, setIsTaskModalOpen}) {
             elipsisMenuOpen && <ElipsisMenu 
             setOpenEditModal={setOpenEditModal}
             setOpenDeleteModal={setOpenDeleteModal}
-            type='Task'
+            type='task'
             />
           }
 
@@ -115,7 +115,7 @@ function TaskModal({colIndex, taskIndex, setIsTaskModalOpen}) {
             {task.description}
           </p>
 
-          <p className='font-bold pt-6 text-gray-100 tracking-widest text-sm'>
+          <p className='font-bold pt-6 text-gray-500 tracking-widest text-sm'>
             Deadline : {dueDate ? dueDate : 'No deadline is set'}
           </p>
 
@@ -162,7 +162,7 @@ function TaskModal({colIndex, taskIndex, setIsTaskModalOpen}) {
             >
               {
                 columns.map((column, index) => (
-                  <option className=' status-option'>
+                  <option key={index} className=' status-option'>
                     {column.name}
                   </option>
                 ))
@@ -187,7 +187,7 @@ function TaskModal({colIndex, taskIndex, setIsTaskModalOpen}) {
                 setIsTaskModalOpen={setIsTaskModalOpen}
                 type='edit'
                 taskIndex={taskIndex}
-                pervColIndex={colIndex}
+                prevColIndex={colIndex}
                 />
               }
 

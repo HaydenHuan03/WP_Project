@@ -25,8 +25,8 @@ function AddEditBoardModal({setBoardModalOpen, type, }) {
     // An array of columns objects, each with name, task and unique id
     const[newColumns, setNewColumns] = useState(
         [
-            {name : 'Todo', task : [], id : uuidv4()},
-            {name : 'Doing', task : [], id : uuidv4()}
+            {name : 'Todo', tasks : [], id : uuidv4()},
+            {name : 'Doing', tasks : [], id : uuidv4()}
         ]
     ) 
 
@@ -124,11 +124,11 @@ function AddEditBoardModal({setBoardModalOpen, type, }) {
                 />
             </div>
 
-                            {/* Board Columns */}
+            {/* Board Columns */}
 
-                            <div
-                className=' mt-8 flex flex-col space-y-3'
-                >
+            <div
+            className=' mt-8 flex flex-col space-y-3'
+            >
                     <label 
                     className=' text-sm dark:text-white text-gray-500'
                     >

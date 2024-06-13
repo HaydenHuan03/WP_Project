@@ -28,19 +28,6 @@ function Task({taskIndex, colIndex}) {
         );
     };
 
-    useEffect(() => {
-        if(completed === subtasks.length && col.name !== "Done"){
-            const doneColIndex = columns.findIndex((column) => column.name === 'Done')
-            if(doneColIndex !== -1){
-                dispatch(boardsSlices.actions.moveTaskToDone({
-                    taskIndex,
-                    prevColIndex: colIndex,
-                    newColIndex: doneColIndex,
-                }))
-            }
-        }
-    }, [completed, subtasks.length, col.name, taskIndex, colIndex, columns, dispatch])
-
   return (
     <div>
         <div

@@ -26,7 +26,8 @@ function AddEditBoardModal({setBoardModalOpen, type, }) {
     const[newColumns, setNewColumns] = useState(
         [
             {name : 'Todo', tasks : [], id : uuidv4()},
-            {name : 'Doing', tasks : [], id : uuidv4()}
+            {name : 'Doing', tasks : [], id : uuidv4()},
+            {name : 'Done', tasks : [], id : uuidv4()}
         ]
     ) 
 
@@ -163,7 +164,7 @@ function AddEditBoardModal({setBoardModalOpen, type, }) {
                          onClick={()=>{
                             setNewColumns((state)=>[
                                 ...state,
-                                {name : '', task : [], id : ''},
+                                {name : '', tasks : [], id : ''},
                             ])
                          }}
                         >

@@ -1,46 +1,34 @@
-import React, {useState}from 'react'
-import Header from './components/Header'
-import Center from './components/Center'
-import { useDispatch, useSelector } from 'react-redux'
-import boardsSlices from './redux/boardSlice'
-import EmptyBoard from './components/EmptyBoard'
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import boardsSlices from './redux/boardSlice';
+import EmptyBoard from './components/EmptyBoard';
+import LoginSignIn from '../src/LoginScreen/LoginSignIn';
+import MainPage from './LoginScreen/MainPage';
 
+function App() {
+  const dispatch = useDispatch();
+  const boards = useSelector((state) => state.boards);
+  const activeBoard = boards.find(board => board.isActive);
 
-function App(){
-  const dispatch = useDispatch()
-  const boards = useSelector((state) => state.boards)
-  const activeBoard = boards.find(board => board.isActive)
-
-  if (!activeBoard && boards.length > 0){
-    dispatch(boardsSlices.actions.setBoardActive({index : 0}))
+  if (!activeBoard && boards.length > 0) {
+    dispatch(boardsSlices.actions.setBoardActive({ index: 0 }));
   }
 
-  const [boardModalOpen, setBoardModalOpen] = useState(false)
-
-  return(
-    <div
-    className=' overflow-hidden overflow-x-scroll'
-    >
-      <>
-        {boards.length > 0 ?
-        <>  
-          {/* Header Section */}
-
-          <Header boardModalOpen = {boardModalOpen} setBoardModalOpen = {setBoardModalOpen}/>
-
-          {/* Center Section */}
-
-          <Center boardModalOpen = {boardModalOpen} setBoardModalOpen = {setBoardModalOpen}/>
-        </>
-        :
-        <>
-          <EmptyBoard type='add'/>
-        </>
-      }
-      </>
+  return (
+    <div className='scrollbar-hide overflow-hidden overflow-x-scroll'>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/login?' element={<LoginSignIn />} />
+          {boards.length > 0 ? (
+            <Route path='/main' element={<MainPage />} />
+          ) : (
+            <Route path='/emptyBoard' element={<EmptyBoard type='add' />} />
+          )}
+        </Routes>
+      </BrowserRouter>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

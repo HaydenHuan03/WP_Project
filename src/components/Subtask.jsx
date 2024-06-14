@@ -26,7 +26,7 @@ function Subtask({index, taskIndex, colIndex}) {
         <input type="checkbox" className=' w-4 h-4 accent-[#635fc7]
         cursor-pointer'
         checked = {checked} 
-        onChange={onChange}
+        onChange = {onChange}
         />
         <p
         className={checked? ' line-through opacity-30' : ''}

@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import boardsSlices from './redux/boardSlice';
 import EmptyBoard from './components/EmptyBoard';
-import LoginSignIn from '../src/LoginScreen/LoginSignIn';
+import LoginSignIn from './LoginScreen/LoginPage';
 import MainPage from './LoginScreen/MainPage';
 
 function App() {
@@ -19,14 +19,16 @@ function App() {
     <div className='scrollbar-hide overflow-hidden overflow-x-scroll'>
       <BrowserRouter>
         <Routes>
-          <Route path='/login?' element={<LoginSignIn />} />
+          <Route path='/' element={<LoginSignIn />} />
+          {/* <Route path='/signup' element={<SignupPage/>}></Route> */}
           {boards.length > 0 ? (
             <Route path='/main' element={<MainPage />} />
           ) : (
             <Route path='/emptyBoard' element={<EmptyBoard type='add' />} />
           )}
         </Routes>
-      </BrowserRouter>
+      </BrowserRouter>        
+
     </div>
   );
 }

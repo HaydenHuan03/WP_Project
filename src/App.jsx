@@ -17,7 +17,7 @@ function App() {
   }
 
   return (
-    <div className='scrollbar-hide overflow-hidden overflow-x-scroll'>
+    <div className=' select-none overflow-hidden overflow-x-scroll'>
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<LoginSignIn />} />

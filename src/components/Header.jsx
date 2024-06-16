@@ -57,7 +57,7 @@ function Header({setBoardModalOpen, boardModalOpen}) {
 
   return (
     <div className=' p-4 fixed left-0 bg-white dark:bg-[#2b2c37] z-50 right-0'>
-        <header className=' h-12 flex justify-between dark:text-white items-center'>
+        <header className=' h-10 flex justify-between dark:text-white items-center'>
 
             {/* Left Side */}
 

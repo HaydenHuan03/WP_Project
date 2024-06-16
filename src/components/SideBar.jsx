@@ -78,11 +78,12 @@ function SideBar({setIsSideBarOpen, isSideBarOpen}) {
                           Create New Board
                         </p>
                     </div>
+                  </div>
 
-                    <div
+                  <div
                     className=' mx-2 p-4 relative space-x-2 bg-slate-100 dark:bg-[#20212c]
                      flex justify-center items-center rounded-lg '
-                    >
+                  >
                         <img src={lightIcon} />
 
                         <Switch
@@ -105,7 +106,6 @@ function SideBar({setIsSideBarOpen, isSideBarOpen}) {
                         <img src={darkIcon} />
                     </div>
 
-                  </div>
                 </div>
               </div>
             )

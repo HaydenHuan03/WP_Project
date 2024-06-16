@@ -237,7 +237,7 @@ function AddEditTaskModal({type , device, setOpenAddEditTask,  setIsTaskModalOpe
                     className=' bg-transparent outline-none focus:border-0 border flex-grow
                     px-4 py-2 rounded-md text-sm border-gray-600 focus:outline-[#635fc7]
                     '
-                    placeholder=' e.g 01/27/2003'
+                    placeholder=' e.g 01-01-2003'
                     />
                 </div>
             </div>

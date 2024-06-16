@@ -3,6 +3,7 @@ import { loginFields } from '../../formFields'
 import Input from '../components/Input'
 import FormAction from '../components/formAction'
 import FormExtra from '../components/formExtra'
+import loginLogo from '../assests/right-from-bracket-solid.svg'
 
 const fields=loginFields
 let fieldState = {}
@@ -46,7 +47,7 @@ function Login() {
             </div>
 
             <FormExtra/>
-            <FormAction handleSubmit={handleSubmit} text='Login'/>
+            <FormAction logo={loginLogo} handleSubmit={handleSubmit} text='Login'/>
         </form>
     </div>
   )

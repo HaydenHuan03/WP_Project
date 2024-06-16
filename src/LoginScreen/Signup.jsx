@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { signupFields } from '../../formFields'
 import FormAction from '../components/formAction'
 import Input from '../components/Input'
+import SignupLogo from '../assests/user-plus-solid.svg'
 
 const fields=signupFields;
 let fieldsState={};
@@ -44,7 +45,7 @@ function Signup() {
                     />
                     )
                 }
-                <FormAction handleSubmit={handleSubmit} text='Signup'/>
+                <FormAction logo={SignupLogo} handleSubmit={handleSubmit} text='Signup'/>
             </div>
         </form>
     </div>

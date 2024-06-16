@@ -1,6 +1,6 @@
 import React from 'react'
 
-function formAction({handleSubmit, type='Button', action='submit', text}) {
+function formAction({handleSubmit, type='Button', action='submit', text, logo}) {
   return (
     <div>
         {
@@ -11,6 +11,9 @@ function formAction({handleSubmit, type='Button', action='submit', text}) {
             onSubmit={handleSubmit}
             >
                 {text}
+                <img 
+                className='h-5 w-5 ml-2 selection-none'
+                src={logo} alt="" />
             </button>
             :
             <></>

@@ -16,7 +16,7 @@ function UserHeader({heading, paragraph, linkName, linkUrl="#"}) {
         <p className='mt-2 text-center text-sm text-gray-600'>
             {paragraph} {' '}
             <Link
-            to={linkUrl} className=' font-medium text-[#635fc7] hover:text-[#635fc7]'
+            to={linkUrl} className=' font-bold text-[#635fc7] hover:text-[#635fc7]'
             >
                 {linkName}
             </Link>

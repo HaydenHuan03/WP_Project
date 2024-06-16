@@ -22,7 +22,7 @@ function ElipsisMenu({type, setOpenEditModal, setOpenDeleteModal}) {
                 </p>
 
                 <p
-                className=' cursor-pointer dark:text-gray-400 text-red-700'
+                className=' cursor-pointer dark:text-red-400 text-red-700'
                 onClick={() => {
                     setOpenDeleteModal()
                 }}

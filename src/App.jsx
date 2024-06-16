@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import boardsSlices from './redux/boardSlice';
 import EmptyBoard from './components/EmptyBoard';
 import LoginSignIn from './LoginScreen/LoginPage';
+import SignupPage from './LoginScreen/SignupPage';
 import MainPage from './LoginScreen/MainPage';
 
 function App() {
@@ -20,7 +21,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<LoginSignIn />} />
-          {/* <Route path='/signup' element={<SignupPage/>}></Route> */}
+          <Route path='/signup' element={<SignupPage />}></Route>
           {boards.length > 0 ? (
             <Route path='/main' element={<MainPage />} />
           ) : (

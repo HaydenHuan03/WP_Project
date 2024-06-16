@@ -1,7 +1,7 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
 
-function LogInHeader({heading, paragraph, linkName, linkUrl="#"}) {
+function UserHeader({heading, paragraph, linkName, linkUrl="#"}) {
   return (
     <div className='mb-10 select-none'>
         <div className=' flex justify-center'>
@@ -25,4 +25,4 @@ function LogInHeader({heading, paragraph, linkName, linkUrl="#"}) {
   )
 }
 
-export default LogInHeader
+export default UserHeader

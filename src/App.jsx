@@ -21,7 +21,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<LoginSignIn />} />
-          <Route path='/signup' element={<SignupPage />}></Route>
+          <Route path='/signup' element={<SignupPage />} />
           {boards.length > 0 ? (
             <Route path='/main' element={<MainPage />} />
           ) : (

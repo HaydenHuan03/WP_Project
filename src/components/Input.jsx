@@ -17,7 +17,8 @@ function Input({
         <label htmlFor={labelFor} className='sr-only'>
             {labelText}
         </label>
-        <input 
+        <input
+        action = ''
         onChange={handleChange} 
         value={value}
         id={id}
@@ -32,9 +33,8 @@ function Input({
           type === 'password' && (
             <button
             type='button'
-            className=' absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer'
+            className=' absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer z-10'
             onClick={togglePasswordVisibility}
-            style={{ zIndex: 10 }}
             >
               <img src={showPassword ? showPass : hidePass} alt="" className={`h-5 w-5 ${showPassword ? 'opacity-100' : 'opacity-50'}`}/>
             </button>

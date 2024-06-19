@@ -1,28 +1,55 @@
 import React, { useState } from 'react'
-import { signupFields } from '../../formFields'
+import { signupFields } from '../formFields'
 import FormAction from '../components/formAction'
-import Input from '../components/Input'
+import Input from './Input'
 import SignupLogo from '../assests/user-plus-solid.svg'
+import { useNavigate } from 'react-router'
+import axios from 'axios'
 
-const fields=signupFields;
-let fieldsState={};
-fields.forEach(field=>fieldsState[field.id]='')
 
 function Signup() {
+    const fields=signupFields;
+    let fieldsState={};
+    fields.forEach(field=>fieldsState[field.id]='')
+    const navigate = useNavigate();
     const [signupState, setSignupState] = useState(fieldsState);
+    const [emailValid, setEmailValid] = useState(true);
 
-    const handleChange = (e) => setSignupState(
+    const handleChange = (e) => {setSignupState(
         {...signupState, [e.target.id]:e.target.value}
     )
+        if(e.target.id === 'email'){
+            const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+            setEmailValid(regex.test(e.target.value));
+        }
+    }
 
     const handleSubmit= (e) => {
         e.preventDefault()
-        console.log(signupState)
-        createAccount()
-    }
 
-    const createAccount = () =>{
+        if(!emailValid){
+            alert('Please enter a valid email address');
+            return
+        }
 
+        if(signupState.password !== signupState.confirmPassword){
+            alert('Password are not the same!')
+            return
+        }
+
+        try{
+            console.log(signupState)
+            axios.post('http://localhost:80/wp_api/signup.php', {
+               email : signupState.email,
+               password : signupState.password
+            }).then(function(response){
+            console.log(response)
+            navigate('/')                
+            })
+        }catch (error){
+            console.error('Registration failed:', error);
+            console.log(error.response);
+        }
     }
 
   return (

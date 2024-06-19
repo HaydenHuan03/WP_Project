@@ -20,9 +20,9 @@ function Input({
         <input
         action = ''
         onChange={handleChange} 
+        name={name}
         value={value}
         id={id}
-        name={name}
         type={showPassword ? 'text' : type}
         required={isRequired}
         className={`${fixedInputClass} ${customClass}`}

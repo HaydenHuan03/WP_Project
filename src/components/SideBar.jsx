@@ -9,8 +9,11 @@ import { Switch } from '@headlessui/react'
 import showSidebarIcon from '../assests/icon-show-sidebar.svg'
 import hideSidebarIcon from '../assests/icon-hide-sidebar.svg'
 import AddEditBoardModal from '../modals/AddEditBoardModal';
+import { useNavigate } from 'react-router';
+import { logoutUser } from '../redux/userSlice'
 
 function SideBar({setIsSideBarOpen, isSideBarOpen}) {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [colorTheme, setTheme] = useDarkMode()
   const [darkSide, setDarkSide] = useState(
@@ -21,6 +24,11 @@ function SideBar({setIsSideBarOpen, isSideBarOpen}) {
   const toggleDarkMode = (checked) => {
       setTheme(colorTheme)
       setDarkSide(checked);
+  }
+
+  const handleLogout = () => {
+    dispatch(logoutUser());
+    navigate('/')
   }
 
   const boards = useSelector((state) => state.boards)
@@ -104,6 +112,10 @@ function SideBar({setIsSideBarOpen, isSideBarOpen}) {
                         </Switch>
 
                         <img src={darkIcon} />
+                    </div>
+
+                    <div className='mx-2 p-4 flex justify-center items-center rounded-lg bg-red-500 text-white cursor-pointer hover:bg-red-600' onClick={handleLogout}>
+                    <p className='text-lg font-bold'>Logout</p>
                     </div>
 
                 </div>

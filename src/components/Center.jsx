@@ -5,18 +5,19 @@ import { useSelector } from 'react-redux'
 import EmptyBoard from './EmptyBoard'
 import AddEditBoardModal from '../modals/AddEditBoardModal'
 
-function Center({boardModalOpen, setBoardModalOpen}) {
+function Center() {
   const[windowSize, setWindowSize] = useState(
     [
       window.innerWidth, window.innerHeight
     ]
   )
 
+  const [isBoardModalOpen, setIsBoardModalOpen] = useState(false);
   const[isSideBarOpen, setIsSideBarOpen] = useState(true)
 
   const boards = useSelector((state) => state.boards)
   const board = boards.find((board)=>board.isActive === true)
-  const columns = board.columns
+  const columns = board ? board.columns : [];
 
   useEffect(()=>{
     const handleWindowResize = () =>{
@@ -53,9 +54,10 @@ function Center({boardModalOpen, setBoardModalOpen}) {
             <Column key={index} colIndex={index}/>
           ))
         } 
+
         <div
         onClick={() => {
-          setBoardModalOpen(true)
+          setIsBoardModalOpen(true)
         }}
         className=' h-screen dark:bg-[#2b2c3740] flex justify-center items-center font-bold
          text-2xl hover:text-[#635fc7] transition duration-300 cursor-pointer bg-[#e9effa] scrollbar-hide 
@@ -65,21 +67,19 @@ function Center({boardModalOpen, setBoardModalOpen}) {
         </div>
         </>
       )
-      :
-      <>
-        <EmptyBoard type='edit'/>
-      </>
-    }
+      : 
+      (
+      <EmptyBoard type="edit" />
+      )}
+
 
     {
-      boardModalOpen && (<AddEditBoardModal
-      type ='edit'
-      setBoardModalOpen={setBoardModalOpen}
-      />)
+      isBoardModalOpen && <AddEditBoardModal type = "edit" setBoardModalOpen={setIsBoardModalOpen}/>
     }
 
 
     </div>
+    
   )
 }
 

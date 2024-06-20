@@ -1,11 +1,23 @@
 //Client-side 'store room'
+import { debounce } from "lodash";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-import { createSlice } from "@reduxjs/toolkit";
-import data from '../data/data.json'
+export const fetchBoards = createAsyncThunk('boards/fetchBoards', async()=>{
+  const response = await fetch('http://localhost:80/wp_api/board.php');
+  if (!response.ok) {
+    throw new Error('Network response is not ok');
+  }
+  const data = await response.json();
+  return data.boards;
+});
 
-const boardsSlices = createSlice({
+export const fetchBoardsDebounced = debounce((dispatch)=>{
+  dispatch(fetchBoards())
+})
+
+export const boardsSlices = createSlice({
     name: 'boards',
-    initialState : data.boards,
+    initialState : [],
     reducers: {
         addBoard: (state, action) => {
           const isActive = state.length === 0;
@@ -160,6 +172,11 @@ const boardsSlices = createSlice({
           col.tasks = col.tasks.filter((task, i) => i !== payload.taskIndex);
         },
       },
+      extraReducers: (builder) => {
+        builder.addCase(fetchBoards.fulfilled, (state,action) => {
+          return action.payload;
+        });
+      },
 })
 
-export default boardsSlices
+export default boardsSlices;

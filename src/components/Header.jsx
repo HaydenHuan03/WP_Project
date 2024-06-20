@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import logo from '../assests/lollipop-32x32.png'
 import iconDown from '../assests/icon-chevron-down.svg'
 import iconUp from '../assests/icon-chevron-up.svg'
@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import AddEditTaskModal from '../modals/AddEditTaskModal'
 import ElipsisMenu  from './ElipsisMenu'
 import DeleteModal from '../modals/DeleteModal'
-import boardsSlices from '../redux/boardSlice'
+import {fetchBoards, boardsSlices} from '../redux/boardSlice'
 
 function Header({setBoardModalOpen, boardModalOpen}) {
     const dispatch = useDispatch()
@@ -32,6 +32,10 @@ function Header({setBoardModalOpen, boardModalOpen}) {
 
     // Get the currently active board
     const board = boards ? boards.find((board) => board.isActive) : null
+
+    useEffect(()=>{
+        dispatch(fetchBoards());
+    }, [dispatch]);
 
     const setOpenEditModal = () => {
         setBoardModalOpen(true)
@@ -68,7 +72,7 @@ function Header({setBoardModalOpen, boardModalOpen}) {
                 </h3>
                 <div className=' flex items-center'>
                     <h3 className=' truncate max-w-[200px] md:text-2xl text-xl font-bold md:ml-20 font-sans'>
-                        {board.name}
+                        {board? board.name : ' '}
                     </h3>
                     <img src={openDropDown ? iconUp :iconDown}
                      alt="dropdown icon"

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import boardsSlices from './redux/boardSlice';
+import boardsSlices, { fetchBoards } from './redux/boardSlice';
 import EmptyBoard from './components/EmptyBoard';
 import LoginSignIn from './LoginScreen/LoginPage';
 import SignupPage from './LoginScreen/SignupPage';
@@ -10,11 +10,19 @@ import MainPage from './LoginScreen/MainPage';
 function App() {
   const dispatch = useDispatch();
   const boards = useSelector((state) => state.boards);
-  const activeBoard = boards.find(board => board.isActive);
+  const isLoading = useSelector((state) => state.isLoading); 
 
-  if (!activeBoard && boards.length > 0) {
-    dispatch(boardsSlices.actions.setBoardActive({ index: 0 }));
+  useEffect(() => {
+    dispatch(fetchBoards());
+  }, [dispatch])
+
+  // If boards are loading, you might want to show a loading spinner or message
+  if (isLoading) {
+    return <div>Loading...</div>;
   }
+
+  // Determine which route to render based on boards state
+  const shouldRenderMainPage = boards.length > 0;
 
   return (
     <div className=' select-none overflow-hidden overflow-x-scroll'>
@@ -22,11 +30,7 @@ function App() {
         <Routes>
           <Route path='/' element={<LoginSignIn />} />
           <Route path='/signup' element={<SignupPage />} />
-          {boards.length > 0 ? (
-            <Route path='/main' element={<MainPage />} />
-          ) : (
-            <Route path='/emptyBoard' element={<EmptyBoard type='add' />} />
-          )}
+          <Route path='/main' element={shouldRenderMainPage ? <MainPage /> : <EmptyBoard/>}/>
         </Routes>
       </BrowserRouter>        
 

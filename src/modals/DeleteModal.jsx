@@ -1,6 +1,36 @@
 import React from 'react'
+import axios from 'axios'
+import { useDispatch, useSelector } from 'react-redux'
+import boardsSlices from '../redux/boardSlice'
 
-function DeleteModal({type, title, onDeleteBtnClick, setIsDeleteModalOpen}) {
+function DeleteModal({type, title, id, colIndex, taskIndex, setIsDeleteModalOpen}) {
+    const boards = useSelector(state => state.boards)
+    const board = boards.find(board => board.isActive)
+    const modal_id = type === 'task'? task.id : board.id
+    const dispatch = useDispatch();
+
+    const handleDelete = () =>{
+        const payload = {
+            id : modal_id,
+            type: type
+        }
+        try{
+            axios.post('http://localhost:80/wp_api/DeleteModal.php', payload).then(function(response){
+                console.log(response.data);
+                if(type === 'board'){
+                    dispatch(boardsSlices.actions.deleteBoard({boardID: id}))
+                }else if(type === 'task'){
+                    dispatch(boardsSlices.actions.deleteTask({taskId: id, colIndex, taskIndex}))
+                }
+
+                setIsDeleteModalOpen(false)
+            })
+
+        }catch(error){
+            console.log("Error:", error)
+        }
+    }
+
   return (
     // Modal Container
     <div
@@ -47,7 +77,7 @@ function DeleteModal({type, title, onDeleteBtnClick, setIsDeleteModalOpen}) {
             className=' flex w-full mt-4 items-center justify-center space-x-4'
             >
                 <button
-                onClick={onDeleteBtnClick}
+                onClick={handleDelete}
                 className=' w-full items-center text-white hover:opacity-75 bg-red-500 font-semibold py-2 rounded-full'
                 >
                     Delete

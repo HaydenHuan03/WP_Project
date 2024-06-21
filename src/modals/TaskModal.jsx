@@ -12,7 +12,7 @@ function TaskModal({colIndex, taskIndex, setIsTaskModalOpen}) {
 
   const dispatch = useDispatch()
   const boards = useSelector(state => state.boards)
-  const board = boards.find(board => board.isActive)
+  const board = boards.find(board => board.isActive);
   const columns = board.columns
   const col = columns.find((column, i) => colIndex === i)
   const task = col.tasks.find((col, i) => taskIndex === i)
@@ -40,7 +40,6 @@ function TaskModal({colIndex, taskIndex, setIsTaskModalOpen}) {
   const[isAddTaskModalOpen, setIsAddTaskModalOpen]=useState(false)
 
   const setOpenEditModal = () => {
-    console.log(task.title)
     setIsAddTaskModalOpen(true)
     setElipsisMenuOpen(false)
   }
@@ -66,12 +65,15 @@ function TaskModal({colIndex, taskIndex, setIsTaskModalOpen}) {
     setNewColIndex(e.target.selectedIndex)
   }
 
-  const onDeleteBtnClick = () => {
-    dispatch(boardsSlices.actions.deleteTask({taskIndex, colIndex}))
-    setIsTaskModalOpen(false)
-    setIsDeleteModalOpen(false)
-  }
-
+  const onDeleteBtnClick = (e) => {
+    if (e.target.textContent === "Delete") {
+      dispatch(boardsSlices.actions.deleteTask({ taskIndex, colIndex }));
+      setIsTaskModalOpen(false);
+      setIsDeleteModalOpen(false);
+    } else {
+      setIsDeleteModalOpen(false);
+    }
+  };
   return (
     <div
     onClick={onClose}
@@ -173,11 +175,14 @@ function TaskModal({colIndex, taskIndex, setIsTaskModalOpen}) {
       </div>
 
               {
-                isDeleteModalOpen && <DeleteModal
+              isDeleteModalOpen && <DeleteModal
                 setIsDeleteModalOpen={setIsDeleteModalOpen}
                 onDeleteBtnClick={onDeleteBtnClick} 
                 title={task.title}
                 type='task'
+                id={task.id}
+                colIndex={colIndex}
+                taskIndex={taskIndex}
                 />
               }
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import AddEditBoardModal from '../modals/AddEditBoardModal'
 
-function EmptyBoard({type}) {
+function EmptyBoard({type = 'add'}) {
     
     const [isBoardModalOpen, setIsBoardModalOpen] = useState(false)
 

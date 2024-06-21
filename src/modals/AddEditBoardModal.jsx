@@ -5,6 +5,7 @@ import {v4 as uuidv4} from 'uuid'
 import crossIcon from  '../assests/icon-cross.svg'
 import { useDispatch, useSelector } from 'react-redux'
 import boardSlices from '../redux/boardSlice'
+import axios from 'axios'
 
 // AddEditBoardModal component
 function AddEditBoardModal({setBoardModalOpen, type}) {
@@ -76,14 +77,35 @@ function AddEditBoardModal({setBoardModalOpen, type}) {
 
 
     // Add or edit a board based on the type with action 'dispatch'
-    const onSubmit = (type) => {
-        setBoardModalOpen(false)
-        if (type === 'add') {
-            dispatch(boardSlices.actions.addBoard({ name, newColumns }))
-        } else {
-            dispatch(boardSlices.actions.editBoard({ name, newColumns }))
+    const onSubmit =  (type) => {
+        const isValid = validate();
+        if (!isValid) return;
+    
+        const payload = {
+            type: type,
+            name: name,
+            columns: newColumns,
+        };
+    
+        if (type === 'edit') {
+            payload.board_id = board.id;
         }
-    }
+    
+        try {
+            axios.post('http://localhost:80/wp_api/AddEditBoard.php', payload).then(function(response){
+                console.log(response.data.message);
+                // Handle success (e.g., update Redux state)
+                if (type === 'add') {
+                    dispatch(boardSlices.actions.addBoard({ name, newColumns }));
+                } else {
+                    dispatch(boardSlices.actions.editBoard({ name, newColumns }));
+                }
+                setBoardModalOpen(false);
+            })
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
 
 
   return (

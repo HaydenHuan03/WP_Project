@@ -1,6 +1,7 @@
 //Client-side 'store room'
 import { debounce } from "lodash";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { v4 as uuidv4 } from 'uuid'
 
 export const fetchBoards = createAsyncThunk('boards/fetchBoards', async()=>{
   const response = await fetch('http://localhost:80/wp_api/board.php');
@@ -23,6 +24,7 @@ export const boardsSlices = createSlice({
           const isActive = state.length === 0;
           const payload = action.payload;
           const board = {
+            id: uuidv4(),
             name: payload.name,
             isActive,
             columns: [],
@@ -50,7 +52,7 @@ export const boardsSlices = createSlice({
         },
         addTask: (state, action) => {
           const { title, status, description, subtasks, dueDate, newColIndex } = action.payload;
-          const task = { title, description, subtasks, status, dueDate };
+          const task = { id: uuidv4(), title, description, subtasks, status, dueDate };
         
           return state.map((board) => {
             if (board.isActive) {
@@ -76,6 +78,7 @@ export const boardsSlices = createSlice({
         },
         editTask: (state, action) => {
           const {
+            id,
             title,
             status,
             description,
@@ -90,8 +93,8 @@ export const boardsSlices = createSlice({
             if (board.isActive) {
               const updatedColumns = board.columns.map((col, colIndex) => {
                 if (colIndex === prevColIndex) {
-                  const updatedTasks = col.tasks.map((task, taskIdx) => {
-                    if (taskIdx === taskIndex) {
+                  const updatedTasks = col.tasks.map((task) => {
+                    if (task.id === id) {
                       return {
                         ...task,
                         title,
@@ -109,7 +112,7 @@ export const boardsSlices = createSlice({
                     tasks: updatedTasks,
                   };
                 } else if (colIndex === newColIndex) {
-                  const task = col.tasks.find((task, taskIdx) => taskIdx === taskIndex);
+                  const task = col.tasks.find((task) => task.id === id);
                   const updatedTask = {
                     ...task,
                     title,
@@ -118,8 +121,8 @@ export const boardsSlices = createSlice({
                     subtasks,
                     dueDate,
                   };
-                  const updatedTasks = col.tasks.map((task, taskIdx) =>
-                    taskIdx === taskIndex ? updatedTask : task
+                  const updatedTasks = col.tasks.map((task) =>
+                    task.id === id ? updatedTask : task
                   );
         
                   return {
@@ -166,10 +169,10 @@ export const boardsSlices = createSlice({
           newCol.tasks.push(task);
         },
         deleteTask: (state, action) => {
-          const payload = action.payload;
+          const { taskId, colIndex } = action.payload;
           const board = state.find((board) => board.isActive);
-          const col = board.columns.find((col, i) => i === payload.colIndex);
-          col.tasks = col.tasks.filter((task, i) => i !== payload.taskIndex);
+          const col = board.columns.find((col, i) => i === colIndex);
+          col.tasks = col.tasks.filter(task => task.id !== taskId);
         },
       },
       extraReducers: (builder) => {

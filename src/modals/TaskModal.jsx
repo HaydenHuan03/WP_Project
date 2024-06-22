@@ -191,6 +191,7 @@ function TaskModal({colIndex, taskIndex, setIsTaskModalOpen}) {
                 setOpenAddEditTask={setIsAddTaskModalOpen}
                 setIsTaskModalOpen={setIsTaskModalOpen}
                 type='edit'
+                id={task.id}
                 taskIndex={taskIndex}
                 prevColIndex={colIndex}
                 />

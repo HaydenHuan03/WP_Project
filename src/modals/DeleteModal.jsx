@@ -6,6 +6,9 @@ import boardsSlices from '../redux/boardSlice'
 function DeleteModal({type, title, id, colIndex, taskIndex, setIsDeleteModalOpen}) {
     const boards = useSelector(state => state.boards)
     const board = boards.find(board => board.isActive)
+    const columns = board?.columns
+    const col = columns?.[colIndex];
+    const task = col?.tasks?.[taskIndex];
     const modal_id = type === 'task'? task.id : board.id
     const dispatch = useDispatch();
 
@@ -29,6 +32,10 @@ function DeleteModal({type, title, id, colIndex, taskIndex, setIsDeleteModalOpen
         }catch(error){
             console.log("Error:", error)
         }
+    }
+
+    if (!board || (type === 'task' && !task)) {
+        return null;
     }
 
   return (

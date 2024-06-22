@@ -43,18 +43,16 @@ export const boardsSlices = createSlice({
           state.splice(state.indexOf(board), 1);
         },
         setBoardActive: (state, action) => {
-          state.map((board, index) => {
-            index === action.payload.index
-              ? (board.isActive = true)
-              : (board.isActive = false);
-            return board;
+          state.forEach((board, index) => {
+            board.isActive = index === action.payload.index;
           });
         },
+        
         addTask: (state, action) => {
           const { title, status, description, subtasks, dueDate, newColIndex } = action.payload;
           const task = { id: uuidv4(), title, description, subtasks, status, dueDate };
-        
-          return state.map((board) => {
+          
+          state.forEach((board) => {
             if (board.isActive) {
               const updatedColumns = board.columns.map((col, index) => {
                 if (index === newColIndex) {
@@ -68,15 +66,10 @@ export const boardsSlices = createSlice({
                 return col;
               });
         
-              return {
-                ...board,
-                columns: updatedColumns,
-              };
+              board.columns = updatedColumns;
             }
-            return board;
           });
-        },
-        editTask: (state, action) => {
+        },tTask: (state, action) => {
           const {
             id,
             title,
@@ -176,10 +169,15 @@ export const boardsSlices = createSlice({
         },
       },
       extraReducers: (builder) => {
-        builder.addCase(fetchBoards.fulfilled, (state,action) => {
-          return action.payload;
+        builder.addCase(fetchBoards.fulfilled, (state, action) => {
+          console.log("Fetched boards:", action.payload);
+          return action.payload.map((board, index) => ({
+            ...board,
+            isActive: index === 0, // Make the first board active initially
+          }));
         });
       },
+      
 })
 
 export default boardsSlices;

@@ -3,6 +3,7 @@ import crossIcon from "../assests/icon-cross.svg";
 import {v4 as uuidv4} from 'uuid'
 import { useDispatch, useSelector } from 'react-redux';
 import boardsSlices from '../redux/boardSlice';
+import axios from 'axios';
 
 function AddEditTaskModal({type , device, setOpenAddEditTask,  setIsTaskModalOpen, taskIndex, prevColIndex = 0}) {
     const dispatch = useDispatch()
@@ -10,6 +11,7 @@ function AddEditTaskModal({type , device, setOpenAddEditTask,  setIsTaskModalOpe
     const [description, setDescription] = useState('')
     const [dueDate, setDueDate] = useState('')
     const [isValid, setIsValid] = useState(true)
+    const [taskId, setTaskId] = useState(null)
 
     // Get the active board from redux store
     const board = useSelector((state) => state.boards).find((board) => board.isActive)
@@ -35,9 +37,10 @@ function AddEditTaskModal({type , device, setOpenAddEditTask,  setIsTaskModalOpe
         if(type === 'edit' && isFirstLoad && task){
             setSubtasks(
                 task.subtasks.map((subtask) => {
-                    return {...subtask, id : uuidv4}
+                    return {...subtask, id : uuidv4()}
                 })
             )
+            setTaskId(task.id)
             setTitle(task.title)
             setDescription(task.description)
             setDueDate(task.dueDate || '')
@@ -84,21 +87,43 @@ function AddEditTaskModal({type , device, setOpenAddEditTask,  setIsTaskModalOpe
 
     // Handle form submission for adding or editing a task
     const onSubmit = (type) =>{
+        const validatedSubtasks = subtasks.map(subtask => ({
+            ...subtask,
+            isCompleted: subtask.isCompleted ? 1 : 0 // Ensure isCompleted is set to 0 or 1
+        }));
+
         const payload = {
             title,
             description,
-            subtasks,
+            subtasks: validatedSubtasks,
             status,
             dueDate,
-            newColIndex,
-            taskIndex,
+            column_id: columns[newColIndex].id,
             prevColIndex,
+            type,
+            taskId: taskId
         }
-        if(type === 'add'){
-            dispatch(boardsSlices.actions.addTask(payload))
-        }else{
-            dispatch(boardsSlices.actions.editTask(payload))
+        if(type === 'edit'){
+            payload.taskIndex = taskIndex;
         }
+        console.log(payload)
+
+        axios.post('http://localhost:80/wp_api/AddEditTask.php',payload).then(function(response){
+            console.log(response.data)
+            if(response.data.success){
+                if(type === 'add'){
+                    dispatch(boardsSlices.actions.addTask(payload))
+                }else{
+                    dispatch(boardsSlices.actions.editTask(payload))
+                }
+                setOpenAddEditTask(false)
+            }else{
+                console.error('Failed to save task')
+            }
+        })
+        .catch(error => {
+            console.error('There has an error', error)
+        })
     }
 
   return (

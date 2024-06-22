@@ -6,6 +6,7 @@ import Subtask from '../components/Subtask'
 import boardsSlices from '../redux/boardSlice'
 import DeleteModal from './DeleteModal'
 import AddEditTaskModal from './AddEditTaskModal'
+import axios from 'axios'
 
 
 function TaskModal({colIndex, taskIndex, setIsTaskModalOpen}) {
@@ -61,8 +62,25 @@ function TaskModal({colIndex, taskIndex, setIsTaskModalOpen}) {
   }
 
   const onChange = (e) => {
-    setStatus(e.target.value)
-    setNewColIndex(e.target.selectedIndex)
+    const newStatus = e.target.value;
+    const newColIndex = e.target.selectedIndex;
+    setStatus(newStatus)
+    setNewColIndex(newColIndex)
+    console.log(task.id, newStatus, col.id, board.id)
+
+    axios.post('http://localhost:80/wp_api/UpdateCurrentStatus.php', {
+    taskId: task.id,
+    newStatus: newStatus,
+    column_id: col.id,
+    board_id: board.id
+  })
+  .then(function(response){ 
+    console.log(response.data)
+  })
+  .catch(error => {
+    console.error("There was an error updating the task!", error);
+  });
+    
   }
 
   const onDeleteBtnClick = (e) => {

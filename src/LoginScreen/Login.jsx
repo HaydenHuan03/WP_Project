@@ -25,12 +25,13 @@ function Login() {
     const handleSubmit = (e) => {
         e.preventDefault();
         const {email, password} = loginState
+        console.log(email, password)
         
         try{
             axios.post('http://localhost:80/wp_api/login.php',{
                 email, password
             }).then(function(response){
-
+                console.log(response.data)
                 if(response.data.success){
                     dispatch(loginUser());
                     navigate('/main')

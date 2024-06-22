@@ -42,7 +42,6 @@ export const boardsSlices = createSlice({
           state.splice(state.indexOf(board), 1);
         },
         setBoardActive: (state, action) => {
-          console.log('Setting active board:', action.payload.boardId);
           return state.map(board => ({
             ...board,
             isActive: board.id === action.payload.boardId

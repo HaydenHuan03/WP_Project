@@ -27,7 +27,6 @@ function HeaderDropdown({ setOpenDropDown , setBoardModalOpen}) {
 
     const handleBoardClick = (e, boardId) => {
         e.preventDefault(); // Prevent default action
-        console.log('Clicking board:', boardId);
         dispatch(boardsSlices.actions.setBoardActive({ boardId }));
         setOpenDropDown(false);
       };

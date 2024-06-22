@@ -17,7 +17,7 @@ function Subtask({index, taskIndex, colIndex}) {
     const onChange = (e) => {
         const isCompleted = e.target.checked ? 1 : 0;
 
-        axios.post('http://localhost:80/wp_api/UpdateTask.php', {
+        axios.post('http://localhost:80/wp_api/UpdateSubtask.php', {
             action: 'update_subtask_status',
             subtaskId: subtask.id,
             isCompleted

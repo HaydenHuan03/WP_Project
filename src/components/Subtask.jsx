@@ -1,6 +1,8 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import boardsSlices from '../redux/boardSlice'
+import AddEditTaskModal from '../modals/AddEditTaskModal'
+import axios from 'axios'
 
 function Subtask({index, taskIndex, colIndex}) {
     const dispatch = useDispatch()
@@ -13,10 +15,24 @@ function Subtask({index, taskIndex, colIndex}) {
     const checked = subtask.isCompleted
 
     const onChange = (e) => {
-        dispatch(
-            boardsSlices.actions.setSubtaskCompleted({index, taskIndex, colIndex})
-        )
+        const isCompleted = e.target.checked ? 1 : 0;
+
+        axios.post('http://localhost:80/wp_api/UpdateTask.php', {
+            action: 'update_subtask_status',
+            subtaskId: subtask.id,
+            isCompleted
+        }).then(response => {
+            console.log(subtask.id)
+            if (response.data.success) {
+                dispatch(boardsSlices.actions.setSubtaskCompleted({ index, taskIndex, colIndex }));
+            } else {
+                console.error('Failed to update subtask status:', response.data.message);
+            }
+        }).catch(error => {
+            console.error('Error:', error);
+        });
     }
+
 
   return (
     <div

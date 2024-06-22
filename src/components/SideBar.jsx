@@ -34,6 +34,16 @@ function SideBar({setIsSideBarOpen, isSideBarOpen}) {
   const boards = useSelector((state) => state.boards)
   const [isBoardModalOpen, setIsBoardModalOpen] = useState(false)
 
+  const handleBoardClick = (e, boardId) => {
+    e.preventDefault(); // Prevent default action
+    console.log('Clicking board:', boardId);
+    try {
+      dispatch(boardsSlices.actions.setBoardActive({ boardId }));
+    } catch (error) {
+      console.error('Error setting board active:', error);
+    }
+  };
+
   return (
     <div>
       <div
@@ -60,15 +70,13 @@ function SideBar({setIsSideBarOpen, isSideBarOpen}) {
                 className=' flex flex-col h-[70vh] justify-between'
                 > 
                   <div>
-                    {boards.map((board, index) => (
+                    {boards.map((board) => (
                       <div
                       className={`flex items-baseline space-x-2 px-5 mr-8 rounded-r-full duration-500 ease-in-out py-4 cursor-pointer hover:bg-[#635fc71a] hover:text-[#635fc7] dark:hover:bg-white dark:hover:text-[#635fc7] dark:text-white ${
                         board.isActive && 'bg-[#635fc7] rounded-r-full text-white mr-8'
                       }`}
-                      key={index}
-                      onClick={() => {
-                        dispatch(boardsSlices.actions.setBoardActive({ index }))
-                      }}
+                      key={board.id}
+                      onClick={(e) => handleBoardClick(e, board.id)}
                     >
                       <img src={boardIcon} alt='Board Icon' />
                       <p className='text-lg font-bold'>{board.name}</p>

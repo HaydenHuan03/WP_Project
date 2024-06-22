@@ -118,7 +118,7 @@ function TaskModal({colIndex, taskIndex, setIsTaskModalOpen}) {
           </p>
 
           <p className='font-bold pt-6 text-gray-500 tracking-widest text-sm'>
-            Deadline : {dueDate ? dueDate : 'No deadline is set'}
+            Deadline : {dueDate!=="0000-00-00" ? dueDate : 'No deadline is set'}
           </p>
 
           <p

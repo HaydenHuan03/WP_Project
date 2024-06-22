@@ -16,7 +16,7 @@ function Center() {
   const[isSideBarOpen, setIsSideBarOpen] = useState(true)
 
   const boards = useSelector((state) => state.boards)
-  const board = boards.find((board)=>board.isActive === true)
+  const board = boards.find((board) => board.isActive === true)
   const columns = board ? board.columns : [];
 
   useEffect(()=>{

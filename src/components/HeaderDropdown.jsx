@@ -15,6 +15,7 @@ function HeaderDropdown({ setOpenDropDown , setBoardModalOpen}) {
         colorTheme === 'light' ? true : false
     )
 
+
     // Function to toggle dark mode
     const toggleDarkMode = (checked) => {
         setTheme(colorTheme)
@@ -22,6 +23,14 @@ function HeaderDropdown({ setOpenDropDown , setBoardModalOpen}) {
     }
 
     const boards = useSelector((state) => state.boards)
+    const board = boards.find(board => board.isActive)
+
+    const handleBoardClick = (e, boardId) => {
+        e.preventDefault(); // Prevent default action
+        console.log('Clicking board:', boardId);
+        dispatch(boardsSlices.actions.setBoardActive({ boardId }));
+        setOpenDropDown(false);
+      };
 
     return (
         <div className=' py-10 px-6 absolute left-0 right-0 bottom-[-100vh] top-16 bg-[#00000080]'
@@ -41,14 +50,13 @@ function HeaderDropdown({ setOpenDropDown , setBoardModalOpen}) {
                 <h3 className=' dark:text-gray-300 text-gray-600 font-semibold mx-4 mb-8'>
                     All Boards ({boards?.length})
                 </h3>
+                
 
                 <div>
-                    {boards.map((board, index) => (
+                    {boards.map((board) => (
                         <div className={` flex items-baseline space-x-2 px-5 py-4 ${board.isActive && 'bg-[#635fc7] dark:bg-[#4b4c63] rounded-r-full text-white mr-8'}`}
-                            key={index}
-                            onClick={()=>{
-                                dispatch(boardsSlices.actions.setBoardActive({index}))
-                            }}
+                            key={board.id}
+                            onClick={(e) => handleBoardClick(e, board.id)}
                             >
                             <img src={boardIcon} className=' h-4' />
                             <p className=' text-lg font-bold dark:text-gray-300'>{board.name}</p>

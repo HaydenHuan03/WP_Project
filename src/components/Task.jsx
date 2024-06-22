@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import TaskModal from '../modals/TaskModal'
-import {fetchBoardsDebounced} from '../redux/boardSlice'
 
 function Task({taskIndex, colIndex}) {
     const dispatch = useDispatch()
@@ -13,9 +12,6 @@ function Task({taskIndex, colIndex}) {
     const task = tasks[taskIndex] || {}
 
     const [isTaskModalOpen, setIsTaskModalOpen] = useState(false)
-    useEffect(() => {
-        dispatch(fetchBoardsDebounced); 
-    }, [dispatch]);
 
     let completed = 0
     let subtasks = task.subtasks
@@ -58,7 +54,7 @@ function Task({taskIndex, colIndex}) {
 
             <p
             className=' font-bold text-xs tracking-tighter mt-2 text-gray-500'>
-                Deadline: {task.dueDate? task.dueDate:'No deadline is set'}
+                Deadline: {task.dueDate !== '0000-00-00'? task.dueDate:'No deadline is set'}
             </p>
         </div>
         {

@@ -1,6 +1,6 @@
 //Client-side 'store room'
-import { debounce } from "lodash";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 import { v4 as uuidv4 } from 'uuid'
 
 export const fetchBoards = createAsyncThunk('boards/fetchBoards', async()=>{
@@ -9,12 +9,11 @@ export const fetchBoards = createAsyncThunk('boards/fetchBoards', async()=>{
     throw new Error('Network response is not ok');
   }
   const data = await response.json();
+  
+  data.boards[0].isActive = true
   return data.boards;
 });
 
-export const fetchBoardsDebounced = debounce((dispatch)=>{
-  dispatch(fetchBoards())
-})
 
 export const boardsSlices = createSlice({
     name: 'boards',
@@ -43,16 +42,18 @@ export const boardsSlices = createSlice({
           state.splice(state.indexOf(board), 1);
         },
         setBoardActive: (state, action) => {
-          state.forEach((board, index) => {
-            board.isActive = index === action.payload.index;
-          });
+          console.log('Setting active board:', action.payload.boardId);
+          return state.map(board => ({
+            ...board,
+            isActive: board.id === action.payload.boardId
+          }));
+
         },
-        
         addTask: (state, action) => {
           const { title, status, description, subtasks, dueDate, newColIndex } = action.payload;
           const task = { id: uuidv4(), title, description, subtasks, status, dueDate };
-          
-          state.forEach((board) => {
+        
+          return state.map((board) => {
             if (board.isActive) {
               const updatedColumns = board.columns.map((col, index) => {
                 if (index === newColIndex) {
@@ -66,10 +67,15 @@ export const boardsSlices = createSlice({
                 return col;
               });
         
-              board.columns = updatedColumns;
+              return {
+                ...board,
+                columns: updatedColumns,
+              };
             }
+            return board;
           });
-        },tTask: (state, action) => {
+        },
+        editTask: (state, action) => {
           const {
             id,
             title,
@@ -148,6 +154,7 @@ export const boardsSlices = createSlice({
           const task = col.tasks.find((task, i) => i === payload.taskIndex);
           const subtask = task.subtasks.find((subtask, i) => i === payload.index);
           subtask.isCompleted = !subtask.isCompleted;
+          axios
         },
         setTaskStatus: (state, action) => {
           const payload = action.payload;
@@ -169,15 +176,10 @@ export const boardsSlices = createSlice({
         },
       },
       extraReducers: (builder) => {
-        builder.addCase(fetchBoards.fulfilled, (state, action) => {
-          console.log("Fetched boards:", action.payload);
-          return action.payload.map((board, index) => ({
-            ...board,
-            isActive: index === 0, // Make the first board active initially
-          }));
+        builder.addCase(fetchBoards.fulfilled, (state,action) => {
+          return action.payload;
         });
       },
-      
 })
 
 export default boardsSlices;

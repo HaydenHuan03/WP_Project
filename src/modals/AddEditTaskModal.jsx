@@ -25,6 +25,7 @@ function AddEditTaskModal({type , device, setOpenAddEditTask,  setIsTaskModalOpe
 
     const [status, setStatus] = useState(columns[prevColIndex].name)
     const [newColIndex, setNewColIndex] = useState(prevColIndex)
+    
 
     const [subtasks, setSubtasks] = useState(
         [
@@ -101,24 +102,21 @@ function AddEditTaskModal({type , device, setOpenAddEditTask,  setIsTaskModalOpe
             column_id: columns[newColIndex].id,
             prevColIndex,
             type,
-            taskId: taskId
+            taskId: taskId,
+            taskIndex
         }
         if(type === 'edit'){
             payload.taskIndex = taskIndex;
         }
         console.log(payload)
+        
 
         axios.post('http://localhost:80/wp_api/AddEditTask.php',payload).then(function(response){
             console.log(response.data)
-            if(response.data.success){
-                if(type === 'add'){
-                    dispatch(boardsSlices.actions.addTask(payload))
-                }else{
-                    dispatch(boardsSlices.actions.editTask(payload))
-                }
-                setOpenAddEditTask(false)
+            if(type === 'add'){
+                dispatch(boardsSlices.actions.addTask(payload))
             }else{
-                console.error('Failed to save task')
+                dispatch(boardsSlices.actions.editTask(payload))
             }
         })
         .catch(error => {

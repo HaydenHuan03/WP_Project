@@ -9,7 +9,6 @@ import axios from 'axios'
 
 // AddEditBoardModal component
 function AddEditBoardModal({setBoardModalOpen, type}) {
-    console.log(type)
     const dispatch = useDispatch()
 
     // The first parameter is current value, second parameter is function to update the state

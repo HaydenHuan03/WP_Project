@@ -37,7 +37,6 @@ function SideBar({setIsSideBarOpen, isSideBarOpen}) {
 
   const handleBoardClick = (e, boardId) => {
     e.preventDefault(); // Prevent default action
-    console.log('Clicking board:', boardId);
     try {
       dispatch(boardsSlices.actions.setBoardActive({ boardId }));
     } catch (error) {
@@ -98,8 +97,8 @@ function SideBar({setIsSideBarOpen, isSideBarOpen}) {
                   </div>
 
                   <div
-                    className=' mx-2 p-4 relative space-x-2 bg-slate-100 dark:bg-[#20212c]
-                     flex justify-center items-center rounded-lg '
+                    className=' mx-2 p-4 relative space-x-3 bg-slate-100 dark:bg-[#20212c]
+                     flex justify-center items-center rounded-lg bottom-0'
                   >
                         <img src={lightIcon} />
 
@@ -123,7 +122,7 @@ function SideBar({setIsSideBarOpen, isSideBarOpen}) {
                         <img src={darkIcon} />
                     </div>
 
-                    <div className='mx-2 p-4 flex justify-center items-center rounded-lg bg-red-500 text-white cursor-pointer hover:bg-red-600' onClick={handleLogout}>
+                    <div className='mx-3 p-4 flex justify-center items-center rounded-lg bg-red-500 text-white cursor-pointer hover:bg-red-600' onClick={handleLogout}>
                     <p className='text-lg font-bold'>Logout</p>
                     </div>
 

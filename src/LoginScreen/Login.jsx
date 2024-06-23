@@ -69,11 +69,10 @@ function Login() {
     //Handle form submission
     const handleSubmit = (e) => {
         e.preventDefault();
-        const {email, password} = loginState
         if(!validateForm()){
             return
         }
-        
+        const {email, password} = loginState
         try{
             //Make a login request to the backend
             axios.post('http://localhost:80/wp_api/login.php',{
@@ -81,6 +80,7 @@ function Login() {
             }).then(function(response){
                 console.log(response.data)
                 if(response.data.success){
+                    alert('Login Successfully')
                     //Dispatch the login action and store user info
                     dispatch(loginUser(response.data.user));
 

@@ -22,7 +22,6 @@ function Subtask({index, taskIndex, colIndex}) {
             subtaskId: subtask.id,
             isCompleted
         }).then(response => {
-            console.log(subtask.id)
             if (response.data.success) {
                 dispatch(boardsSlices.actions.setSubtaskCompleted({ index, taskIndex, colIndex }));
             } else {

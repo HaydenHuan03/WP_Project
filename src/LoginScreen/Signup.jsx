@@ -38,11 +38,11 @@ function Signup() {
         }
 
         try{
-            console.log(signupState)
             axios.post('http://localhost:80/wp_api/signup.php', {
                email : signupState.email,
                password : signupState.password
             }).then(function(response){
+            alert('Sign up successfully')
             console.log(response)
             navigate('/')                
             })

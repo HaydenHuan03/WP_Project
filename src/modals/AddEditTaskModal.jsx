@@ -27,7 +27,7 @@ function AddEditTaskModal({type , device, setOpenAddEditTask,  setIsTaskModalOpe
     const col = columns[prevColIndex]
     const task = col?.tasks?.[taskIndex]
     const [status, setStatus] = useState(columns[prevColIndex].name)
-    
+
     useEffect(() => {
         if(type === 'edit' && isFirstLoad && task){
             setSubtasks(
@@ -98,7 +98,6 @@ function AddEditTaskModal({type , device, setOpenAddEditTask,  setIsTaskModalOpe
         if(type === 'edit'){
             payload.taskIndex = taskIndex;
         }
-        console.log(payload)
         
 
         axios.post('http://localhost:80/wp_api/AddEditTask.php',payload).then(function(response){

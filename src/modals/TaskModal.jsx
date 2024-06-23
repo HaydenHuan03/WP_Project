@@ -63,7 +63,6 @@ function TaskModal({colIndex, taskIndex, setIsTaskModalOpen}) {
     const newColIndex = e.target.selectedIndex;
     setStatus(newStatus)
     setNewColIndex(newColIndex)
-    console.log(task.id, newStatus, col.id, board.id)
 
     axios.post('http://localhost:80/wp_api/UpdateCurrentStatus.php', {
         taskId: task.id,

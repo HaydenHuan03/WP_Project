@@ -81,8 +81,6 @@ function AddEditBoardModal({setBoardModalOpen, type}) {
         if (type === 'edit') {
             payload.board_id = board.id;
         }
-
-        console.log(payload)
     
         try {
             axios.post('http://localhost:80/wp_api/AddEditBoard.php', payload).then(function(response){

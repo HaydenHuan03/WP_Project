@@ -15,6 +15,7 @@ function AddEditTaskModal({type , device, setOpenAddEditTask,  setIsTaskModalOpe
 
     // Get the active board from redux store
     const board = useSelector((state) => state.boards).find((board) => board.isActive)
+    
 
     const[isFirstLoad, setIsFirsLoad] = useState(true)
 

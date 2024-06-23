@@ -2,12 +2,12 @@ import React, {useState} from 'react'
 import { loginFields } from '../formFields'
 import Input from './Input'
 import FormAction from '../components/formAction'
-import FormExtra from '../components/formExtra'
 import loginLogo from '../assests/right-from-bracket-solid.svg'
 import { loginUser } from '../redux/userSlice'
 import { useNavigate } from 'react-router'
 import axios from 'axios'
 import { useDispatch } from 'react-redux'
+import { fetchBoards } from '../redux/boardSlice'
 
 const fields=loginFields
 let fieldState = {}
@@ -17,6 +17,7 @@ function Login() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const[loginState, setLoginState] = useState(fieldState)
+    const [rememberMe, setRememberMe] = useState(false)
 
     const handleChange = (e) => {
         setLoginState({...loginState, [e.target.id]:e.target.value})
@@ -25,15 +26,20 @@ function Login() {
     const handleSubmit = (e) => {
         e.preventDefault();
         const {email, password} = loginState
-        console.log(email, password)
+        if(!validateForm()){
+            return
+        }
         
         try{
             axios.post('http://localhost:80/wp_api/login.php',{
-                email, password
+                email, password, rememberMe
             }).then(function(response){
                 console.log(response.data)
                 if(response.data.success){
-                    dispatch(loginUser());
+                    dispatch(loginUser(response.data.user));
+                    localStorage.setItem('user', JSON.stringify(response.data.user));
+                    localStorage.setItem('user_id', response.data.user.id);
+                    dispatch(fetchBoards());
                     navigate('/main')
                 }else{
                     alert('Invalid email or password')
@@ -47,15 +53,11 @@ function Login() {
     }
 
     const validateForm = () => {
-        if(!username || !password){
+        if(!email || !password){
             alert('Email and Password are required')
             return false
         }
         return true
-    }
-
-    const authenticateUser = () =>{
-
     }
 
   return (
@@ -79,7 +81,24 @@ function Login() {
                 }
             </div>
 
-            <FormExtra/>
+            <div className='flex items-center justify-between'>
+                <div className='flex items-center'>
+                    <input
+                    id='rememberme'
+                    name='rememberme'
+                    type='checkbox'
+                    className='h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded'
+                    />
+                    <label htmlFor="rememberme" className="ml-2 block text-sm text-gray-900">remember me</label>
+                </div>
+
+                <div className=' text-sm'>
+                    <a href="#" className='font-medium text-purple-600 hover:text-purple-500'>
+                        Forgot Password?
+                    </a>
+                </div>
+            </div> 
+
             <FormAction logo={loginLogo} handleSubmit={handleSubmit} text='Login'/>
         </form>
     </div>

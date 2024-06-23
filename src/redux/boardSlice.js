@@ -4,13 +4,17 @@ import axios from "axios";
 import { v4 as uuidv4 } from 'uuid'
 
 export const fetchBoards = createAsyncThunk('boards/fetchBoards', async()=>{
-  const response = await fetch('http://localhost:80/wp_api/board.php');
+  const userId = localStorage.getItem('user_id');
+  const response = await fetch(`http://localhost:80/wp_api/board.php?user_id=${userId}`);
   if (!response.ok) {
     throw new Error('Network response is not ok');
   }
   const data = await response.json();
   
-  data.boards[0].isActive = true
+  if (data.boards.length > 0) {
+    data.boards[0].isActive = true;
+  }
+
   return data.boards;
 });
 
@@ -25,6 +29,7 @@ export const boardsSlices = createSlice({
           const board = {
             id: uuidv4(),
             name: payload.name,
+            userId: payload.userId,
             isActive,
             columns: [],
           };
@@ -36,6 +41,7 @@ export const boardsSlices = createSlice({
           const board = state.find((board) => board.isActive);
           board.name = payload.name;
           board.columns = payload.newColumns;
+          board.userId = payload.userId;
         },
         deleteBoard: (state) => {
           const board = state.find((board) => board.isActive);
@@ -51,94 +57,33 @@ export const boardsSlices = createSlice({
         addTask: (state, action) => {
           const { title, status, description, subtasks, dueDate, newColIndex } = action.payload;
           const task = { id: uuidv4(), title, description, subtasks, status, dueDate };
-        
-          return state.map((board) => {
-            if (board.isActive) {
-              const updatedColumns = board.columns.map((col, index) => {
-                if (index === newColIndex) {
-                  // Check if col.tasks exists, if not, initialize it as an empty array
-                  const tasks = col.tasks || [];
-                  return {
-                    ...col,
-                    tasks: [...tasks, task],
-                  };
-                }
-                return col;
-              });
-        
-              return {
-                ...board,
-                columns: updatedColumns,
-              };
+          const board = state.find(board => board.isActive);
+          if (board) {
+              const column = board.columns[newColIndex];
+              if (column) {
+                  column.tasks = column.tasks || [];
+                  column.tasks.push(task);
+              }
+          }
+      },
+      editTask: (state, action) => {
+        const { id, title, status, description, subtasks, dueDate, prevColIndex, newColIndex, taskIndex } = action.payload;
+        const board = state.find(board => board.isActive);
+        if (board) {
+            const prevCol = board.columns[prevColIndex];
+            const task = prevCol.tasks[taskIndex];
+            task.title = title;
+            task.status = status;
+            task.description = description;
+            task.subtasks = subtasks;
+            task.dueDate = dueDate;
+            if (prevColIndex !== newColIndex) {
+                const newCol = board.columns[newColIndex];
+                prevCol.tasks.splice(taskIndex, 1);
+                newCol.tasks.push(task);
             }
-            return board;
-          });
-        },
-        editTask: (state, action) => {
-          const {
-            id,
-            title,
-            status,
-            description,
-            subtasks,
-            dueDate,
-            prevColIndex,
-            newColIndex,
-            taskIndex,
-          } = action.payload;
-        
-          return state.map((board) => {
-            if (board.isActive) {
-              const updatedColumns = board.columns.map((col, colIndex) => {
-                if (colIndex === prevColIndex) {
-                  const updatedTasks = col.tasks.map((task) => {
-                    if (task.id === id) {
-                      return {
-                        ...task,
-                        title,
-                        status,
-                        description,
-                        subtasks,
-                        dueDate,
-                      };
-                    }
-                    return task;
-                  });
-        
-                  return {
-                    ...col,
-                    tasks: updatedTasks,
-                  };
-                } else if (colIndex === newColIndex) {
-                  const task = col.tasks.find((task) => task.id === id);
-                  const updatedTask = {
-                    ...task,
-                    title,
-                    status,
-                    description,
-                    subtasks,
-                    dueDate,
-                  };
-                  const updatedTasks = col.tasks.map((task) =>
-                    task.id === id ? updatedTask : task
-                  );
-        
-                  return {
-                    ...col,
-                    tasks: updatedTasks,
-                  };
-                }
-                return col;
-              });
-        
-              return {
-                ...board,
-                columns: updatedColumns,
-              };
-            }
-            return board;
-          });
-        },
+        }
+    },
         dragTask: (state, action) => {
           const { colIndex, prevColIndex, taskIndex } = action.payload;
           const board = state.find((board) => board.isActive);

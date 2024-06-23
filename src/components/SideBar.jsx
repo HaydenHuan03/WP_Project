@@ -27,6 +27,7 @@ function SideBar({setIsSideBarOpen, isSideBarOpen}) {
   }
 
   const handleLogout = () => {
+    localStorage.removeItem('user');
     dispatch(logoutUser());
     navigate('/')
   }

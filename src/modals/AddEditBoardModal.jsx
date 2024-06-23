@@ -20,6 +20,9 @@ function AddEditBoardModal({setBoardModalOpen, type}) {
 
     const board = useSelector((state) => state.boards).find((board) => board.isActive)
 
+    const userId = useSelector((state) => state.user.user?.id)
+    console.log(userId)
+
     // Track whether the form of input is valid or not
     const [isValid, setIsValid] = useState(true)
 
@@ -84,20 +87,23 @@ function AddEditBoardModal({setBoardModalOpen, type}) {
             type: type,
             name: name,
             columns: newColumns,
+            user_id: userId
         };
     
         if (type === 'edit') {
             payload.board_id = board.id;
         }
+
+        console.log(payload)
     
         try {
             axios.post('http://localhost:80/wp_api/AddEditBoard.php', payload).then(function(response){
                 console.log(response.data.message);
                 // Handle success (e.g., update Redux state)
                 if (type === 'add') {
-                    dispatch(boardSlices.actions.addBoard({ name, newColumns }));
+                    dispatch(boardSlices.actions.addBoard({ name, newColumns, userId }));
                 } else {
-                    dispatch(boardSlices.actions.editBoard({ name, newColumns }));
+                    dispatch(boardSlices.actions.editBoard({ name, newColumns, userId }));
                 }
                 setBoardModalOpen(false);
             })

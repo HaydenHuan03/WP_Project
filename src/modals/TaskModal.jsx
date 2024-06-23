@@ -21,12 +21,6 @@ function TaskModal({colIndex, taskIndex, setIsTaskModalOpen}) {
 
   const [dueDate, setDueDate] = useState(task.dueDate || '');
 
-  const deadline = () => {
-    if(task.dueDate){
-      setDueDate(task.dueDate)
-    }
-  }
-
   let completed = 0
   subtasks.forEach((subtask) => {
       if(subtask.isCompleted){
@@ -114,7 +108,7 @@ function TaskModal({colIndex, taskIndex, setIsTaskModalOpen}) {
           <img
             src={elipsis}
             onClick={() => {
-              setElipsisMenuOpen(state => !state)
+              setElipsisMenuOpen(true)
             }}
             className=' cursor-pointer h-6'
           />

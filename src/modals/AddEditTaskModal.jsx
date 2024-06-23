@@ -89,15 +89,10 @@ function AddEditTaskModal({type , device, setOpenAddEditTask,  setIsTaskModalOpe
 
     // Handle form submission for adding or editing a task
     const onSubmit = (type) =>{
-        const validatedSubtasks = subtasks.map(subtask => ({
-            ...subtask,
-            isCompleted: subtask.isCompleted ? 1 : 0 // Ensure isCompleted is set to 0 or 1
-        }));
-
         const payload = {
             title,
             description,
-            subtasks: validatedSubtasks,
+            subtasks,
             status,
             dueDate,
             column_id: columns[newColIndex].id,
@@ -119,6 +114,8 @@ function AddEditTaskModal({type , device, setOpenAddEditTask,  setIsTaskModalOpe
             }else{
                 dispatch(boardsSlices.actions.editTask(payload))
             }
+            setOpenAddEditTask(false);
+            setIsTaskModalOpen(false);
         })
         .catch(error => {
             console.error('There has an error', error)
@@ -296,7 +293,6 @@ function AddEditTaskModal({type , device, setOpenAddEditTask,  setIsTaskModalOpe
                         const isValid = validate()
                         if(isValid){
                             onSubmit(type)
-                            setOpenAddEditTask(false)
                         }
                     }}
                     className=' w-full items-center text-white bg-[#635fc7] py-2 rounded-full '

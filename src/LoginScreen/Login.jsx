@@ -17,7 +17,6 @@ function Login() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const[loginState, setLoginState] = useState(fieldState)
-    const [rememberMe, setRememberMe] = useState(false)
 
     const handleChange = (e) => {
         setLoginState({...loginState, [e.target.id]:e.target.value})
@@ -32,7 +31,7 @@ function Login() {
         
         try{
             axios.post('http://localhost:80/wp_api/login.php',{
-                email, password, rememberMe
+                email, password
             }).then(function(response){
                 console.log(response.data)
                 if(response.data.success){

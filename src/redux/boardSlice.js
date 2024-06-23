@@ -58,39 +58,70 @@ export const boardsSlices = createSlice({
           const { title, status, description, subtasks, dueDate, newColIndex } = action.payload;
           const task = { id: uuidv4(), title, description, subtasks, status, dueDate };
           const board = state.find(board => board.isActive);
+        
           if (board) {
-              const column = board.columns[newColIndex];
-              if (column) {
-                  column.tasks = column.tasks || [];
-                  column.tasks.push(task);
+            board.columns = board.columns.map((column, colIndex) => {
+              if (colIndex === newColIndex) {
+                return {
+                  ...column,
+                  tasks: [...(column.tasks || []), task],
+                };
               }
+              return column;
+            });
           }
-      },
-      editTask: (state, action) => {
-        const { id, title, status, description, subtasks, dueDate, prevColIndex, newColIndex, taskIndex } = action.payload;
-        const board = state.find(board => board.isActive);
-        if (board) {
-            const prevCol = board.columns[prevColIndex];
-            const task = prevCol.tasks[taskIndex];
-            task.title = title;
-            task.status = status;
-            task.description = description;
-            task.subtasks = subtasks;
-            task.dueDate = dueDate;
-            if (prevColIndex !== newColIndex) {
-                const newCol = board.columns[newColIndex];
-                prevCol.tasks.splice(taskIndex, 1);
-                newCol.tasks.push(task);
-            }
-        }
-    },
-        dragTask: (state, action) => {
-          const { colIndex, prevColIndex, taskIndex } = action.payload;
-          const board = state.find((board) => board.isActive);
-          const prevCol = board.columns.find((col, i) => i === prevColIndex);
-          const task = prevCol.tasks.splice(taskIndex, 1)[0];
-          board.columns.find((col, i) => i === colIndex).tasks.push(task);
         },
+      editTask: (state, action) => {
+        const {
+          id,
+          title,
+          status,
+          description,
+          subtasks,
+          dueDate,
+          prevColIndex,
+          newColIndex,
+        } = action.payload;
+      
+        return state.map((board) => {
+          if (board.isActive) {
+            const updatedColumns = board.columns.map((col, colIndex) => {
+              // Remove the task from the previous column
+              if (colIndex === prevColIndex) {
+                return {
+                  ...col,
+                  tasks: col.tasks.filter((task) => task.id !== id),
+                };
+              }
+      
+              // Add the updated task to the new column
+              if (colIndex === newColIndex) {
+                const updatedTask = {
+                  id,
+                  title,
+                  description,
+                  subtasks,
+                  status,
+                  dueDate,
+                };
+                return {
+                  ...col,
+                  tasks: [...col.tasks, updatedTask],
+                };
+              }
+      
+              return col;
+            });
+      
+            return {
+              ...board,
+              columns: updatedColumns,
+            };
+          }
+      
+          return board;
+        });
+      },      
         setSubtaskCompleted: (state, action) => {
           const payload = action.payload;
           const board = state.find((board) => board.isActive);

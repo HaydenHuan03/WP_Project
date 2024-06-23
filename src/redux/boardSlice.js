@@ -82,6 +82,7 @@ export const boardsSlices = createSlice({
           prevColIndex,
           newColIndex,
         } = action.payload;
+        
       
         return state.map((board) => {
           if (board.isActive) {

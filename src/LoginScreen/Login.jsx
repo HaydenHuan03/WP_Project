@@ -10,6 +10,8 @@ import { useDispatch } from 'react-redux'
 import { fetchBoards } from '../redux/boardSlice'
 import Cookies from 'js-cookie'
 
+
+//Initialise the login field state
 const fields=loginFields
 let fieldState = {}
 fields.forEach(field=>fieldState[field.id]='')
@@ -20,8 +22,8 @@ function Login() {
     const[loginState, setLoginState] = useState(fieldState)
     const[rememberMe, setRememberMe] = useState(false)
 
+    //Check for the 'user_login' cookie when the component mount
     useEffect(() => {
-        // Check for the cookie when the component mounts
         const userCookie = Cookies.get('user_login')
         if (userCookie) {
             // If the cookie exists, fetch the user data
@@ -29,6 +31,16 @@ function Login() {
         }
     }, [])
 
+    //validate the form field
+    const validateForm = () => {
+        if(!email || !password){
+            alert('Email and Password are required')
+            return false
+        }
+        return true
+    }
+
+    //Function to fetch user data based on user ID
     const fetchUserData = async (userId) => {
         try {
             const response = await axios.get(`http://localhost:80/wp_api/get_user.php?id=${userId}`)
@@ -44,14 +56,17 @@ function Login() {
         }
     }
 
+    //Handle the change in form fields
     const handleChange = (e) => {
         setLoginState({...loginState, [e.target.id]:e.target.value})
     }
 
+    //Handle the 'remember me' checkbox
     const handleRememberMe = (e) => {
         setRememberMe(e.target.checked);
     }
 
+    //Handle form submission
     const handleSubmit = (e) => {
         e.preventDefault();
         const {email, password} = loginState
@@ -60,18 +75,25 @@ function Login() {
         }
         
         try{
+            //Make a login request to the backend
             axios.post('http://localhost:80/wp_api/login.php',{
                 email, password, rememberMe
             }).then(function(response){
                 console.log(response.data)
                 if(response.data.success){
+                    //Dispatch the login action and store user info
                     dispatch(loginUser(response.data.user));
 
+                    //Set a cookie if "remember me" is checked
                     if(rememberMe){
                         Cookies.set('user_login', response.data.user.id, {expires: 30})
                     }
+
+                    // Store user info in local storage
                     localStorage.setItem('user', JSON.stringify(response.data.user));
                     localStorage.setItem('user_id', response.data.user.id);
+
+                    //Fetch boards data and navigate to the main page
                     dispatch(fetchBoards());
                     navigate('/main')
                 }else{
@@ -85,13 +107,6 @@ function Login() {
 
     }
 
-    const validateForm = () => {
-        if(!email || !password){
-            alert('Email and Password are required')
-            return false
-        }
-        return true
-    }
 
   return (
     <div>

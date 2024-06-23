@@ -12,28 +12,21 @@ function AddEditTaskModal({type , device, setOpenAddEditTask,  setIsTaskModalOpe
     const [dueDate, setDueDate] = useState('')
     const [isValid, setIsValid] = useState(true)
     const [taskId, setTaskId] = useState(null)
-
-    // Get the active board from redux store
-    const board = useSelector((state) => state.boards).find((board) => board.isActive)
-    
-
-    const[isFirstLoad, setIsFirsLoad] = useState(true)
-
-    const columns = board?.columns || []
-    const col = columns[prevColIndex]
-
-    const task = col?.tasks?.[taskIndex]
-
     const [status, setStatus] = useState(columns[prevColIndex].name)
     const [newColIndex, setNewColIndex] = useState(prevColIndex)
-    
-
+    const[isFirstLoad, setIsFirsLoad] = useState(true)    
     const [subtasks, setSubtasks] = useState(
         [
             {title: '', isCompleted: false, id : uuidv4()},
             {title: '', isCompleted: false, id : uuidv4()},
         ]
     )
+
+    // Get the active board from redux store
+    const board = useSelector((state) => state.boards).find((board) => board.isActive)
+    const columns = board?.columns || []
+    const col = columns[prevColIndex]
+    const task = col?.tasks?.[taskIndex]
 
     useEffect(() => {
         if(type === 'edit' && isFirstLoad && task){
@@ -50,6 +43,7 @@ function AddEditTaskModal({type , device, setOpenAddEditTask,  setIsTaskModalOpe
         }
     },[type, task, prevColIndex, columns])
 
+    //Handle subtask input change
     const onChange = (id, newValue) => {
         setSubtasks((pervState) => {
             const newState = [...pervState]

@@ -19,8 +19,6 @@ function TaskModal({colIndex, taskIndex, setIsTaskModalOpen}) {
   const task = col.tasks.find((col, i) => taskIndex === i)
   const subtasks = task.subtasks
 
-  const [dueDate, setDueDate] = useState(task.dueDate || '');
-
   let completed = 0
   subtasks.forEach((subtask) => {
       if(subtask.isCompleted){
@@ -28,22 +26,26 @@ function TaskModal({colIndex, taskIndex, setIsTaskModalOpen}) {
       }
   })
 
+  const [dueDate, setDueDate] = useState(task.dueDate || '');
   const[status, setStatus] = useState(task.status)
   const[newColIndex, setNewColIndex] = useState(columns.indexOf(col))
   const[elipsisMenuOpen, setElipsisMenuOpen] = useState(false)
   const[isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const[isAddTaskModalOpen, setIsAddTaskModalOpen]=useState(false)
 
+  //Open the edit modal and close the ellipsis menu
   const setOpenEditModal = () => {
     setIsAddTaskModalOpen(true)
     setElipsisMenuOpen(false)
   }
 
+  //Open the delete modal and close the ellipsis menu
   const setOpenDeleteModal = () => {
     setElipsisMenuOpen(false)
     setIsDeleteModalOpen(true)
   }
 
+  //Close the task modal and update the task status in the redux store
   const onClose = (e) =>{
     if(e.target !== e.currentTarget){
       return
@@ -55,6 +57,7 @@ function TaskModal({colIndex, taskIndex, setIsTaskModalOpen}) {
     setIsTaskModalOpen(false)
   }
 
+  //Handle the status change and update the backend
   const onChange = (e) => {
     const newStatus = e.target.value;
     const newColIndex = e.target.selectedIndex;
@@ -63,20 +66,20 @@ function TaskModal({colIndex, taskIndex, setIsTaskModalOpen}) {
     console.log(task.id, newStatus, col.id, board.id)
 
     axios.post('http://localhost:80/wp_api/UpdateCurrentStatus.php', {
-    taskId: task.id,
-    newStatus: newStatus,
-    column_id: col.id,
-    board_id: board.id
-  })
-  .then(function(response){ 
-    console.log(response.data)
-  })
-  .catch(error => {
-    console.error("There was an error updating the task!", error);
-  });
-    
+        taskId: task.id,
+        newStatus: newStatus,
+        column_id: col.id,
+        board_id: board.id
+      })
+      .then(function(response){ 
+        console.log(response.data)
+      })
+      .catch(error => {
+        console.error("There was an error updating the task!", error);
+      }); 
   }
 
+  //Handle delete button click
   const onDeleteBtnClick = (e) => {
     if (e.target.textContent === "Delete") {
       dispatch(boardsSlices.actions.deleteTask({ taskIndex, colIndex }));

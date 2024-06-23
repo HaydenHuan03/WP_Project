@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import boardsSlices from '../redux/boardSlice'
 
 function DeleteModal({type, title, id, colIndex, taskIndex, setIsDeleteModalOpen}) {
+    //Select the active board from redux store
     const boards = useSelector(state => state.boards)
     const board = boards.find(board => board.isActive)
     const columns = board?.columns
@@ -12,20 +13,25 @@ function DeleteModal({type, title, id, colIndex, taskIndex, setIsDeleteModalOpen
     const modal_id = type === 'task'? task.id : board.id
     const dispatch = useDispatch();
 
+    //Function to handle delete function
     const handleDelete = () =>{
         const payload = {
             id : modal_id,
             type: type
         }
         try{
+            // Send delete request to the server
             axios.post('http://localhost:80/wp_api/DeleteModal.php', payload).then(function(response){
                 console.log(response.data);
                 if(type === 'board'){
+                    // Dispatch action to delete the board
                     dispatch(boardsSlices.actions.deleteBoard({boardID: id}))
                 }else if(type === 'task'){
+                    // Dispatch action to delete
                     dispatch(boardsSlices.actions.deleteTask({taskId: id, colIndex, taskIndex}))
                 }
 
+                // close the modal
                 setIsDeleteModalOpen(false)
             })
 
@@ -34,6 +40,7 @@ function DeleteModal({type, title, id, colIndex, taskIndex, setIsDeleteModalOpen
         }
     }
 
+    //Return null if board or task is not found
     if (!board || (type === 'task' && !task)) {
         return null;
     }

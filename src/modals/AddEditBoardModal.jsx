@@ -10,23 +10,11 @@ import axios from 'axios'
 // AddEditBoardModal component
 function AddEditBoardModal({setBoardModalOpen, type}) {
     const dispatch = useDispatch()
-
-    // The first parameter is current value, second parameter is function to update the state
-
-    // Store the name of the board
     const [name, setName] = useState('')
-
     const[isFirstLoad, setIsFirstLoad] = useState(true)
-
     const board = useSelector((state) => state.boards).find((board) => board.isActive)
-
     const userId = useSelector((state) => state.user.user?.id)
-    console.log(userId)
-
-    // Track whether the form of input is valid or not
     const [isValid, setIsValid] = useState(true)
-
-    // An array of columns objects, each with name, task and unique id
     const[newColumns, setNewColumns] = useState(
         [
             {name : 'Todo', tasks : [], id : uuidv4()},
@@ -79,7 +67,7 @@ function AddEditBoardModal({setBoardModalOpen, type}) {
 
 
     // Add or edit a board based on the type with action 'dispatch'
-    const onSubmit =  (type) => {
+    const onSubmit = (type) => {
         const isValid = validate();
         if (!isValid) return;
     

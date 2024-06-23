@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { loginFields } from '../formFields'
 import Input from './Input'
 import FormAction from '../components/formAction'
@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router'
 import axios from 'axios'
 import { useDispatch } from 'react-redux'
 import { fetchBoards } from '../redux/boardSlice'
+import Cookies from 'js-cookie'
 
 const fields=loginFields
 let fieldState = {}
@@ -17,9 +18,38 @@ function Login() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const[loginState, setLoginState] = useState(fieldState)
+    const[rememberMe, setRememberMe] = useState(false)
+
+    useEffect(() => {
+        // Check for the cookie when the component mounts
+        const userCookie = Cookies.get('user_login')
+        if (userCookie) {
+            // If the cookie exists, fetch the user data
+            fetchUserData(userCookie)
+        }
+    }, [])
+
+    const fetchUserData = async (userId) => {
+        try {
+            const response = await axios.get(`http://localhost:80/wp_api/get_user.php?id=${userId}`)
+            if (response.data.success) {
+                setLoginState(prevState => ({
+                    ...prevState,
+                    email: response.data.user.email
+                }))
+                setRememberMe(true)
+            }
+        } catch (error) {
+            console.error('Failed to fetch user data:', error)
+        }
+    }
 
     const handleChange = (e) => {
         setLoginState({...loginState, [e.target.id]:e.target.value})
+    }
+
+    const handleRememberMe = (e) => {
+        setRememberMe(e.target.checked);
     }
 
     const handleSubmit = (e) => {
@@ -31,11 +61,15 @@ function Login() {
         
         try{
             axios.post('http://localhost:80/wp_api/login.php',{
-                email, password
+                email, password, rememberMe
             }).then(function(response){
                 console.log(response.data)
                 if(response.data.success){
                     dispatch(loginUser(response.data.user));
+
+                    if(rememberMe){
+                        Cookies.set('user_login', response.data.user.id, {expires: 30})
+                    }
                     localStorage.setItem('user', JSON.stringify(response.data.user));
                     localStorage.setItem('user_id', response.data.user.id);
                     dispatch(fetchBoards());
@@ -86,6 +120,8 @@ function Login() {
                     id='rememberme'
                     name='rememberme'
                     type='checkbox'
+                    checked={rememberMe}
+                    onChange={handleRememberMe}
                     className='h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded'
                     />
                     <label htmlFor="rememberme" className="ml-2 block text-sm text-gray-900">remember me</label>

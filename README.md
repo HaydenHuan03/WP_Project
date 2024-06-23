@@ -1,8 +1,23 @@
-# React + Vite
+# Online Kanban Task Management Website Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Here is my first project by using react, redux and tailwind as frontend, php and mysql as my backend and database.
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Authors
+
+- [@HaydenHuan03](https://github.com/HaydenHuan03/)
+
+
+## Environment Variables
+
+To run this project, you will need to add the following environment variables to your .env file
+
+`npm i` is required to run the project
+
+`npm install vite`first then `npm run dev` to run the project by vite
+
+`js-cookie`
+
+`axios`
+
+`uuid`

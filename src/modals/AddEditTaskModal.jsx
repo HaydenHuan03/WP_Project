@@ -12,7 +12,6 @@ function AddEditTaskModal({type , device, setOpenAddEditTask,  setIsTaskModalOpe
     const [dueDate, setDueDate] = useState('')
     const [isValid, setIsValid] = useState(true)
     const [taskId, setTaskId] = useState(null)
-    const [status, setStatus] = useState(columns[prevColIndex].name)
     const [newColIndex, setNewColIndex] = useState(prevColIndex)
     const[isFirstLoad, setIsFirsLoad] = useState(true)    
     const [subtasks, setSubtasks] = useState(
@@ -27,7 +26,8 @@ function AddEditTaskModal({type , device, setOpenAddEditTask,  setIsTaskModalOpe
     const columns = board?.columns || []
     const col = columns[prevColIndex]
     const task = col?.tasks?.[taskIndex]
-
+    const [status, setStatus] = useState(columns[prevColIndex].name)
+    
     useEffect(() => {
         if(type === 'edit' && isFirstLoad && task){
             setSubtasks(
